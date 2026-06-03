@@ -1,0 +1,16 @@
+[
+  {
+    "id": "staff-1",
+    "name": "ファヨン先生",
+    "slackUserId": "U0B7VUMD094",
+    "imageUrl": "https://dfhzqqdssoiwpxkhkqwg.supabase.co/storage/v1/object/sign/teacherimgs/hwayoungPF.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80NmQ1M2ZkZS1hN2YyLTQ3YzktYjRjNC00NTVjMzgzNDY5NTYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZWFjaGVyaW1ncy9od2F5b3VuZ1BGLmpwZWciLCJpYXQiOjE3ODA0NzU1NjYsImV4cCI6NDkzNDA3NTU2Nn0.k5tfjQsz-DAuvs7Uc8NLBF5C25Tmr4Cp0BMSlYCyspI",
+    "enabled": true
+  },
+  {
+    "id": "e7b96c75-f165-493f-997c-3ab8b891268d",
+    "name": "B先生",
+    "slackUserId": "U0B7ZFF4UTB",
+    "imageUrl": "",
+    "enabled": true
+  }
+]

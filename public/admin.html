@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>受付管理</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Admin</p>
+          <h1>管理</h1>
+        </div>
+        <div class="topbar-actions">
+          <a class="admin-link" href="/">受付へ</a>
+          <button id="logoutButton" class="admin-link button-link" type="button">ログアウト</button>
+        </div>
+      </section>
+
+      <section class="panel admin-section">
+        <div class="section-title">担当者管理</div>
+        <form id="staffForm" class="staff-form">
+          <input id="staffId" type="hidden" />
+          <label class="field">
+            <span>表示名</span>
+            <input id="staffName" type="text" autocomplete="off" placeholder="例：A先生" />
+          </label>
+          <label class="field">
+            <span>SlackメンバーID</span>
+            <input id="staffSlackUserId" type="text" autocomplete="off" placeholder="例：U0B7ZFF4UTB" />
+          </label>
+          <label class="field">
+            <span>プロフィール画像URL</span>
+            <input id="staffImageUrl" type="url" autocomplete="off" placeholder="https://..." />
+          </label>
+          <label class="toggle-row">
+            <input id="staffEnabled" type="checkbox" checked />
+            <span>受付画面に表示する</span>
+          </label>
+          <div class="form-actions">
+            <button class="primary" type="submit">保存</button>
+            <button id="resetStaffForm" class="secondary" type="button">新規入力</button>
+          </div>
+          <p id="staffMessage" class="message" aria-live="polite"></p>
+        </form>
+        <div id="staffList" class="admin-list"></div>
+      </section>
+
+      <section class="panel admin-section">
+        <div class="section-title">端末管理</div>
+        <form id="deviceForm" class="staff-form">
+          <input id="deviceId" type="hidden" />
+          <label class="field">
+            <span>校舎名</span>
+            <input id="schoolName" type="text" autocomplete="off" placeholder="例：原宿校" />
+          </label>
+          <label class="field">
+            <span>端末名</span>
+            <input id="deviceName" type="text" autocomplete="off" placeholder="例：受付iPad 1" />
+          </label>
+          <label class="field">
+            <span>端末キー</span>
+            <input id="deviceKey" type="text" autocomplete="off" placeholder="例：harajuku-front-1" />
+          </label>
+          <label class="toggle-row">
+            <input id="deviceEnabled" type="checkbox" checked />
+            <span>この端末を有効にする</span>
+          </label>
+          <div class="form-actions">
+            <button class="primary" type="submit">保存</button>
+            <button id="resetDeviceForm" class="secondary" type="button">新規入力</button>
+          </div>
+          <p id="deviceMessage" class="message" aria-live="polite"></p>
+        </form>
+        <div id="deviceList" class="admin-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">直近の受付</div>
+        <div id="visits" class="visits"></div>
+      </section>
+    </main>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>

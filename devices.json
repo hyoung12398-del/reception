@@ -1,0 +1,16 @@
+[
+  {
+    "id": "device-1",
+    "deviceKey": "deco-1st",
+    "schoolName": "立川校",
+    "deviceName": "DECO1st",
+    "enabled": true
+  },
+  {
+    "id": "989be3fd-3dec-4d01-923e-e08f13773bb0",
+    "deviceKey": "deco-2nd",
+    "schoolName": "立川校",
+    "deviceName": "DECO2nd",
+    "enabled": true
+  }
+]

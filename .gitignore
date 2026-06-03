@@ -1,0 +1,6 @@
+.env.local
+visits.json
+.DS_Store
+node_modules
+.next
+out
