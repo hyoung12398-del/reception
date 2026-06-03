@@ -76,7 +76,7 @@ function renderStaff(item) {
         <div>
           <strong>${escapeHtml(item.name)}</strong>
           <p>${escapeHtml(item.slackUserId)}</p>
-          ${item.imageUrl ? `<p>${escapeHtml(item.imageUrl)}</p>` : ""}
+          <p>${item.imageUrl ? "プロフィール画像 設定済み" : "プロフィール画像 未設定"}</p>
         </div>
       </div>
       <div class="row-actions">

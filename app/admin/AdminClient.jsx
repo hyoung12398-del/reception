@@ -156,7 +156,7 @@ export default function AdminClient() {
                   <div>
                     <strong>{item.name}</strong>
                     <p>{item.slackUserId}</p>
-                    {item.imageUrl ? <p>{item.imageUrl}</p> : null}
+                    {item.imageUrl ? <p>プロフィール画像 設定済み</p> : <p>プロフィール画像 未設定</p>}
                   </div>
                 </div>
                 <div className="row-actions">
