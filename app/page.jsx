@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function ReceptionPage() {
@@ -124,9 +123,6 @@ export default function ReceptionPage() {
           <h1>受付</h1>
           <p className="device-label">{deviceLabel}</p>
         </div>
-        <Link className="admin-link" href="/admin">
-          管理
-        </Link>
       </section>
 
       <section className="panel">
