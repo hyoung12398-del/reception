@@ -12,6 +12,7 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
 await upsertMany("staff", (await readJson("staff.json")).map(toStaffRow));
 await upsertMany("devices", (await readJson("devices.json")).map(toDeviceRow));
 await upsertMany("visits", (await readJson("visits.json")).map(toVisitRow));
+await upsertMany("app_settings", [toSettingsRow(await readOptionalJson("settings.json"))]);
 
 console.log("Migrated staff, devices, and visits to Supabase.");
 
@@ -37,6 +38,14 @@ async function upsertMany(table, rows) {
 
 async function readJson(fileName) {
   return JSON.parse(await readFile(join(root, fileName), "utf8"));
+}
+
+async function readOptionalJson(fileName) {
+  try {
+    return await readJson(fileName);
+  } catch {
+    return {};
+  }
 }
 
 async function loadEnv() {
@@ -86,5 +95,18 @@ function toVisitRow(visit) {
     slack_ok: Boolean(visit.slackOk),
     slack_error: visit.slackError || null,
     trial_recipient_count: visit.trialRecipientCount || null,
+  };
+}
+
+function toSettingsRow(settings = {}) {
+  return {
+    id: "default",
+    brand_name: settings.brandName || "受付",
+    logo_url: settings.logoUrl || null,
+    background_color: settings.backgroundColor || "#f6f4ef",
+    surface_color: settings.surfaceColor || "#ffffff",
+    text_color: settings.textColor || "#1f2428",
+    accent_color: settings.accentColor || "#16635b",
+    updated_at: new Date().toISOString(),
   };
 }

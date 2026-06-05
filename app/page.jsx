@@ -13,12 +13,14 @@ export default function ReceptionPage() {
   const [staffSearch, setStaffSearch] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [settings, setSettings] = useState(defaultSettings);
 
   useEffect(() => {
     const key = new URLSearchParams(location.search).get("device") || "";
     setDeviceKey(key);
     loadDevice(key);
     loadStaff();
+    loadSettings();
   }, []);
 
   useEffect(() => {
@@ -56,6 +58,13 @@ export default function ReceptionPage() {
   async function loadStaff() {
     const staff = await fetch("/api/staff").then((res) => res.json());
     setStaffList(staff.filter((item) => item.enabled));
+  }
+
+  async function loadSettings() {
+    const response = await fetch("/api/settings");
+    if (response.ok) {
+      setSettings(await response.json());
+    }
   }
 
   async function sendCheckIn() {
@@ -114,13 +123,21 @@ export default function ReceptionPage() {
   const hasQuery = Boolean(normalizeText(staffSearch));
   const sendDisabled = sending || !currentDevice || !visitorName.trim() || !selectedStaffId;
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
+  const themeStyle = {
+    "--bg": settings.backgroundColor,
+    "--surface": settings.surfaceColor,
+    "--text": settings.textColor,
+    "--accent": settings.accentColor,
+    "--accent-strong": settings.accentColor,
+  };
 
   return (
-    <main className="app-shell">
+    <main className="app-shell" style={themeStyle}>
       <section className="topbar">
-        <div>
+        <div className="brand-block">
+          {settings.logoUrl ? <img className="brand-logo" src={settings.logoUrl} alt="" /> : null}
           <p className="eyebrow">Reception</p>
-          <h1>受付</h1>
+          <h1>{settings.brandName || "受付"}</h1>
           <p className="device-label">{deviceLabel}</p>
         </div>
       </section>
@@ -195,3 +212,12 @@ function Avatar({ item, className }) {
 function normalizeText(value) {
   return String(value).trim().toLocaleLowerCase("ja-JP");
 }
+
+const defaultSettings = {
+  brandName: "受付",
+  logoUrl: "",
+  backgroundColor: "#f6f4ef",
+  surfaceColor: "#ffffff",
+  textColor: "#1f2428",
+  accentColor: "#16635b",
+};

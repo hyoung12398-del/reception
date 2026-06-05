@@ -11,13 +11,15 @@ export default function AdminClient() {
   const [deviceForm, setDeviceForm] = useState(emptyDeviceForm());
   const [staffMessage, setStaffMessage] = useState("");
   const [deviceMessage, setDeviceMessage] = useState("");
+  const [settingsForm, setSettingsForm] = useState(emptySettingsForm());
+  const [settingsMessage, setSettingsMessage] = useState("");
 
   useEffect(() => {
     loadAll();
   }, []);
 
   async function loadAll() {
-    await Promise.all([loadStaff(), loadDevices(), loadVisits()]);
+    await Promise.all([loadStaff(), loadDevices(), loadVisits(), loadSettings()]);
   }
 
   async function loadStaff() {
@@ -30,6 +32,10 @@ export default function AdminClient() {
 
   async function loadVisits() {
     setVisits(await fetchJson("/api/visits"));
+  }
+
+  async function loadSettings() {
+    setSettingsForm(await fetchJson("/api/settings"));
   }
 
   async function saveStaff(event) {
@@ -72,6 +78,25 @@ export default function AdminClient() {
     await loadDevices();
   }
 
+  async function saveSettings(event) {
+    event.preventDefault();
+    setSettingsMessage("保存しています...");
+
+    const response = await fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settingsForm),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      setSettingsMessage(result.error || "保存に失敗しました。");
+      return;
+    }
+
+    setSettingsForm(result.settings);
+    setSettingsMessage("デザイン設定を保存しました。");
+  }
+
   async function logout() {
     await fetch("/api/logout", { method: "POST" });
     location.href = "/login";
@@ -92,6 +117,60 @@ export default function AdminClient() {
             ログアウト
           </button>
         </div>
+      </section>
+
+      <section className="panel admin-section">
+        <div className="section-title">デザイン設定</div>
+        <form className="staff-form" onSubmit={saveSettings}>
+          <label className="field">
+            <span>受付画面タイトル</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setSettingsForm({ ...settingsForm, brandName: event.target.value })}
+              placeholder="例：DECO MUSIC 受付"
+              type="text"
+              value={settingsForm.brandName}
+            />
+          </label>
+          <label className="field">
+            <span>ロゴ画像URL</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setSettingsForm({ ...settingsForm, logoUrl: event.target.value })}
+              placeholder="https://..."
+              type="url"
+              value={settingsForm.logoUrl}
+            />
+          </label>
+          <div className="color-grid">
+            <ColorField
+              label="背景色"
+              value={settingsForm.backgroundColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, backgroundColor: value })}
+            />
+            <ColorField
+              label="カード色"
+              value={settingsForm.surfaceColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, surfaceColor: value })}
+            />
+            <ColorField
+              label="文字色"
+              value={settingsForm.textColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, textColor: value })}
+            />
+            <ColorField
+              label="メイン色"
+              value={settingsForm.accentColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
+            />
+          </div>
+          <button className="primary" type="submit">
+            保存
+          </button>
+          <p className="message" aria-live="polite">
+            {settingsMessage}
+          </p>
+        </form>
       </section>
 
       <section className="panel admin-section">
@@ -326,6 +405,35 @@ function emptyDeviceForm() {
     deviceKey: "",
     enabled: true,
   };
+}
+
+function emptySettingsForm() {
+  return {
+    brandName: "受付",
+    logoUrl: "",
+    backgroundColor: "#f6f4ef",
+    surfaceColor: "#ffffff",
+    textColor: "#1f2428",
+    accentColor: "#16635b",
+  };
+}
+
+function ColorField({ label, value, onChange }) {
+  return (
+    <label className="field color-field">
+      <span>{label}</span>
+      <div className="color-row">
+        <input onChange={(event) => onChange(event.target.value)} type="color" value={value} />
+        <input
+          autoComplete="off"
+          onChange={(event) => onChange(event.target.value)}
+          pattern="#[0-9a-fA-F]{6}"
+          type="text"
+          value={value}
+        />
+      </div>
+    </label>
+  );
 }
 
 async function fetchJson(url, options) {

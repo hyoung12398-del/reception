@@ -61,6 +61,19 @@ h1 {
   margin: 8px 0 0;
 }
 
+.brand-block {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+}
+
+.brand-logo {
+  display: block;
+  max-height: 72px;
+  max-width: min(320px, 70vw);
+  object-fit: contain;
+}
+
 .admin-link {
   background: #fff;
   border: 1px solid var(--line);
@@ -276,6 +289,28 @@ input {
   grid-template-columns: 1fr auto;
 }
 
+.color-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 20px;
+}
+
+.color-field {
+  margin-bottom: 0;
+}
+
+.color-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 64px 1fr;
+}
+
+.color-row input[type="color"] {
+  height: 56px;
+  padding: 4px;
+}
+
 .message {
   color: var(--accent-strong);
   font-weight: 700;
@@ -368,6 +403,7 @@ input {
   }
 
   .form-actions,
+  .color-grid,
   .admin-row,
   .visit-row {
     align-items: stretch;
