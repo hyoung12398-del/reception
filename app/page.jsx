@@ -132,72 +132,74 @@ export default function ReceptionPage() {
   };
 
   return (
-    <main className="app-shell" style={themeStyle}>
-      <section className="topbar">
-        <div className="brand-block">
-          {settings.logoUrl ? <img className="brand-logo" src={settings.logoUrl} alt="" /> : null}
-          <p className="eyebrow">Reception</p>
-          <h1>{settings.brandName || "受付"}</h1>
-          <p className="device-label">{deviceLabel}</p>
-        </div>
-      </section>
+    <div className="theme-root" style={themeStyle}>
+      <main className="app-shell">
+        <section className="topbar">
+          <div className="brand-block">
+            {settings.logoUrl ? <img className="brand-logo" src={settings.logoUrl} alt="" /> : null}
+            <p className="eyebrow">Reception</p>
+            <h1>{settings.brandName || "受付"}</h1>
+            <p className="device-label">{deviceLabel}</p>
+          </div>
+        </section>
 
-      <section className="panel">
-        <label className="field">
-          <span>来訪者名</span>
-          <input
-            autoComplete="name"
-            onChange={(event) => setVisitorName(event.target.value)}
-            placeholder="例：山田 太郎"
-            type="text"
-            value={visitorName}
-          />
-        </label>
-
-        <div>
-          <div className="section-title">担当者を選択</div>
-          <label className="search-field">
-            <span>先生を検索</span>
+        <section className="panel">
+          <label className="field">
+            <span>来訪者名</span>
             <input
-              autoComplete="off"
-              onChange={(event) => setStaffSearch(event.target.value)}
-              placeholder="名前で検索"
-              type="search"
-              value={staffSearch}
+              autoComplete="name"
+              onChange={(event) => setVisitorName(event.target.value)}
+              placeholder="例：山田 太郎"
+              type="text"
+              value={visitorName}
             />
           </label>
-          <div className="staff-grid">
-            {filteredStaff.map((item) => (
-              <button
-                className={`staff-card ${item.id === selectedStaffId ? "selected" : ""}`}
-                data-id={item.id}
-                key={item.id}
-                onClick={() => setSelectedStaffId(item.id)}
-                type="button"
-              >
-                <Avatar item={item} className="staff-avatar" />
-                <span>{item.name}</span>
-              </button>
-            ))}
-          </div>
-          {!filteredStaff.length && (
-            <p className="empty">
-              {hasQuery ? "該当する先生が見つかりません。" : "名前を入力すると先生が表示されます。"}
-            </p>
-          )}
-        </div>
 
-        <button className="primary" disabled={sendDisabled} onClick={sendCheckIn} type="button">
-          呼び出す
-        </button>
-        <button className="trial-button" disabled={trialDisabled} onClick={sendTrialLesson} type="button">
-          体験レッスンはこちら
-        </button>
-        <p className="message" aria-live="polite">
-          {message}
-        </p>
-      </section>
-    </main>
+          <div>
+            <div className="section-title">担当者を選択</div>
+            <label className="search-field">
+              <span>先生を検索</span>
+              <input
+                autoComplete="off"
+                onChange={(event) => setStaffSearch(event.target.value)}
+                placeholder="名前で検索"
+                type="search"
+                value={staffSearch}
+              />
+            </label>
+            <div className="staff-grid">
+              {filteredStaff.map((item) => (
+                <button
+                  className={`staff-card ${item.id === selectedStaffId ? "selected" : ""}`}
+                  data-id={item.id}
+                  key={item.id}
+                  onClick={() => setSelectedStaffId(item.id)}
+                  type="button"
+                >
+                  <Avatar item={item} className="staff-avatar" />
+                  <span>{item.name}</span>
+                </button>
+              ))}
+            </div>
+            {!filteredStaff.length && (
+              <p className="empty">
+                {hasQuery ? "該当する先生が見つかりません。" : "名前を入力すると先生が表示されます。"}
+              </p>
+            )}
+          </div>
+
+          <button className="primary" disabled={sendDisabled} onClick={sendCheckIn} type="button">
+            呼び出す
+          </button>
+          <button className="trial-button" disabled={trialDisabled} onClick={sendTrialLesson} type="button">
+            体験レッスンはこちら
+          </button>
+          <p className="message" aria-live="polite">
+            {message}
+          </p>
+        </section>
+      </main>
+    </div>
   );
 }
 

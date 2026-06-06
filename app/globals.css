@@ -22,6 +22,12 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
+.theme-root {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
 .app-shell {
   width: min(1120px, calc(100vw - 32px));
   margin: 0 auto;
