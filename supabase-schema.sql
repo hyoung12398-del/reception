@@ -16,10 +16,13 @@ create table if not exists public.devices (
   device_key text not null unique,
   school_name text not null,
   device_name text not null,
+  trial_lesson_staff_ids text[] not null default '{}',
   enabled boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.devices add column if not exists trial_lesson_staff_ids text[] not null default '{}';
 
 create table if not exists public.visits (
   id text primary key,

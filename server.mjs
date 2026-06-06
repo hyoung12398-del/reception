@@ -262,6 +262,9 @@ async function handleSaveDevice(req, res) {
   const deviceKey = normalizeDeviceKey(body.deviceKey);
   const schoolName = String(body.schoolName || "").trim();
   const deviceName = String(body.deviceName || "").trim();
+  const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
+    ? body.trialLessonStaffIds.map(String).filter(Boolean)
+    : [];
   const enabled = Boolean(body.enabled);
 
   if (!deviceKey || !schoolName || !deviceName) {
@@ -283,6 +286,7 @@ async function handleSaveDevice(req, res) {
     deviceKey,
     schoolName,
     deviceName,
+    trialLessonStaffIds,
     enabled,
   };
 

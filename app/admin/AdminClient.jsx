@@ -333,6 +333,28 @@ export default function AdminClient() {
             />
             <span>この端末を有効にする</span>
           </label>
+          <div className="section-subtitle">この端末の体験レッスン通知先</div>
+          <div className="check-list">
+            {staffItems.length ? (
+              staffItems.map((item) => (
+                <label className="check-row" key={item.id}>
+                  <input
+                    checked={deviceForm.trialLessonStaffIds.includes(item.id)}
+                    onChange={(event) => {
+                      const ids = new Set(deviceForm.trialLessonStaffIds);
+                      if (event.target.checked) ids.add(item.id);
+                      else ids.delete(item.id);
+                      setDeviceForm({ ...deviceForm, trialLessonStaffIds: [...ids] });
+                    }}
+                    type="checkbox"
+                  />
+                  <span>{item.name}</span>
+                </label>
+              ))
+            ) : (
+              <p className="empty">担当者を登録すると選択できます。</p>
+            )}
+          </div>
           <div className="form-actions">
             <button className="primary" type="submit">
               保存
@@ -356,6 +378,7 @@ export default function AdminClient() {
                       {item.schoolName} / {item.deviceName}
                     </strong>
                     <p>{item.deviceKey}</p>
+                    <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
                         {url}
@@ -437,8 +460,19 @@ function emptyDeviceForm() {
     schoolName: "",
     deviceName: "",
     deviceKey: "",
+    trialLessonStaffIds: [],
     enabled: true,
   };
+}
+
+function recipientLabel(ids = [], staffItems = []) {
+  if (!ids.length) return "体験レッスン通知先 未設定";
+
+  const names = staffItems
+    .filter((item) => ids.includes(item.id))
+    .map((item) => item.name);
+
+  return names.length ? `体験レッスン通知先 ${names.join("、")}` : "体験レッスン通知先 設定済み";
 }
 
 function emptySettingsForm() {

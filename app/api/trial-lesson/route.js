@@ -18,7 +18,7 @@ export async function POST(request) {
     return json({ error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
   }
 
-  const trialRecipients = await findTrialRecipients();
+  const trialRecipients = await findTrialRecipients(device);
   if (!trialRecipients.length) {
     return json({ error: "体験レッスン通知先が設定されていません。" }, 400);
   }
