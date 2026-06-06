@@ -108,6 +108,7 @@ function toSettingsRow(settings = {}) {
     surface_color: settings.surfaceColor || "#ffffff",
     text_color: settings.textColor || "#1f2428",
     accent_color: settings.accentColor || "#16635b",
+    trial_lesson_staff_ids: settings.trialLessonStaffIds || [],
     updated_at: new Date().toISOString(),
   };
 }

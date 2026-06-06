@@ -164,6 +164,28 @@ export default function AdminClient() {
               onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
             />
           </div>
+          <div className="section-subtitle">体験レッスン通知先</div>
+          <div className="check-list">
+            {staffItems.length ? (
+              staffItems.map((item) => (
+                <label className="check-row" key={item.id}>
+                  <input
+                    checked={settingsForm.trialLessonStaffIds.includes(item.id)}
+                    onChange={(event) => {
+                      const ids = new Set(settingsForm.trialLessonStaffIds);
+                      if (event.target.checked) ids.add(item.id);
+                      else ids.delete(item.id);
+                      setSettingsForm({ ...settingsForm, trialLessonStaffIds: [...ids] });
+                    }}
+                    type="checkbox"
+                  />
+                  <span>{item.name}</span>
+                </label>
+              ))
+            ) : (
+              <p className="empty">担当者を登録すると選択できます。</p>
+            )}
+          </div>
           <button className="primary" type="submit">
             保存
           </button>
@@ -427,6 +449,7 @@ function emptySettingsForm() {
     surfaceColor: "#ffffff",
     textColor: "#1f2428",
     accentColor: "#16635b",
+    trialLessonStaffIds: [],
   };
 }
 

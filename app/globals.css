@@ -154,6 +154,13 @@ h1 {
   font-weight: 700;
 }
 
+.section-subtitle {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 800;
+  margin: 22px 0 10px;
+}
+
 input {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -315,6 +322,35 @@ input {
 .color-row input[type="color"] {
   height: 56px;
   padding: 4px;
+}
+
+.check-list {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 0;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.check-row {
+  align-items: center;
+  background: #fbfbf8;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  font-weight: 800;
+  min-height: 50px;
+  padding: 10px 12px;
+}
+
+.check-row:last-child {
+  border-bottom: 0;
+}
+
+.check-row input {
+  height: 22px;
+  width: 22px;
 }
 
 .message {
