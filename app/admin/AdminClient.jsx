@@ -197,6 +197,16 @@ export default function AdminClient() {
             />
           </label>
           <label className="field">
+            <span>検索用カナ</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setStaffForm({ ...staffForm, searchKana: event.target.value })}
+              placeholder="例：ファヨン"
+              type="text"
+              value={staffForm.searchKana}
+            />
+          </label>
+          <label className="field">
             <span>プロフィール画像URL</span>
             <input
               autoComplete="off"
@@ -234,6 +244,7 @@ export default function AdminClient() {
                   <Avatar item={item} className="admin-avatar" />
                   <div>
                     <strong>{item.name}</strong>
+                    {item.searchKana ? <p>{item.searchKana}</p> : null}
                     <p>{item.slackUserId}</p>
                     {item.imageUrl ? <p>プロフィール画像 設定済み</p> : <p>プロフィール画像 未設定</p>}
                   </div>
@@ -391,6 +402,7 @@ function emptyStaffForm() {
   return {
     id: "",
     name: "",
+    searchKana: "",
     slackUserId: "",
     imageUrl: "",
     enabled: true,

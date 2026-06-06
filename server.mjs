@@ -230,6 +230,7 @@ async function handleSaveStaff(req, res) {
   const body = await readBody(req);
   const id = String(body.id || "").trim();
   const name = String(body.name || "").trim();
+  const searchKana = String(body.searchKana || "").trim();
   const slackUserId = String(body.slackUserId || "").trim();
   const imageUrl = String(body.imageUrl || "").trim();
   const enabled = Boolean(body.enabled);
@@ -245,6 +246,7 @@ async function handleSaveStaff(req, res) {
   const nextStaff = {
     id: id || crypto.randomUUID(),
     name,
+    searchKana,
     slackUserId,
     imageUrl,
     enabled,

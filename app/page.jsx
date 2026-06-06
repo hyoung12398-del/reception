@@ -26,7 +26,10 @@ export default function ReceptionPage() {
   useEffect(() => {
     const query = normalizeText(staffSearch);
     const nextFilteredStaff = query
-      ? staffList.filter((item) => normalizeText(item.name).includes(query))
+      ? staffList.filter((item) => {
+          const searchableText = [item.name, item.searchKana].map(normalizeText).join(" ");
+          return searchableText.includes(query);
+        })
       : [];
 
     if (selectedStaffId && !nextFilteredStaff.some((item) => item.id === selectedStaffId)) {

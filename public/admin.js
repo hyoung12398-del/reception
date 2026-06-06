@@ -9,6 +9,7 @@ const deviceForm = document.querySelector("#deviceForm");
 const staffId = document.querySelector("#staffId");
 const staffName = document.querySelector("#staffName");
 const staffSlackUserId = document.querySelector("#staffSlackUserId");
+const staffSearchKana = document.querySelector("#staffSearchKana");
 const staffImageUrl = document.querySelector("#staffImageUrl");
 const staffEnabled = document.querySelector("#staffEnabled");
 const staffMessage = document.querySelector("#staffMessage");
@@ -75,6 +76,7 @@ function renderStaff(item) {
         ${renderAvatar(item, "admin-avatar")}
         <div>
           <strong>${escapeHtml(item.name)}</strong>
+          ${item.searchKana ? `<p>${escapeHtml(item.searchKana)}</p>` : ""}
           <p>${escapeHtml(item.slackUserId)}</p>
           <p>${item.imageUrl ? "プロフィール画像 設定済み" : "プロフィール画像 未設定"}</p>
         </div>
@@ -107,6 +109,7 @@ function renderDevice(item) {
 function editStaff(item) {
   staffId.value = item.id;
   staffName.value = item.name;
+  staffSearchKana.value = item.searchKana || "";
   staffSlackUserId.value = item.slackUserId;
   staffImageUrl.value = item.imageUrl || "";
   staffEnabled.checked = item.enabled;
@@ -132,6 +135,7 @@ async function saveStaff(event) {
     body: JSON.stringify({
       id: staffId.value,
       name: staffName.value,
+      searchKana: staffSearchKana.value,
       slackUserId: staffSlackUserId.value,
       imageUrl: staffImageUrl.value,
       enabled: staffEnabled.checked,
@@ -193,6 +197,7 @@ async function fetchJson(url, options) {
 function clearStaffForm() {
   staffId.value = "";
   staffName.value = "";
+  staffSearchKana.value = "";
   staffSlackUserId.value = "";
   staffImageUrl.value = "";
   staffEnabled.checked = true;

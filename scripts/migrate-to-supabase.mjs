@@ -65,6 +65,7 @@ function toStaffRow(staff) {
   return {
     id: staff.id,
     name: staff.name,
+    search_kana: staff.searchKana || null,
     slack_user_id: staff.slackUserId,
     image_url: staff.imageUrl || null,
     enabled: staff.enabled,

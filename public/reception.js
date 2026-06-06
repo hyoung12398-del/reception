@@ -48,7 +48,10 @@ async function loadDevice() {
 function filterStaff() {
   const query = normalizeText(staffSearch.value);
   const filteredStaff = query
-    ? staffList.filter((item) => normalizeText(item.name).includes(query))
+    ? staffList.filter((item) => {
+        const searchableText = [item.name, item.searchKana].map(normalizeText).join(" ");
+        return searchableText.includes(query);
+      })
     : [];
 
   if (selectedStaffId && !filteredStaff.some((item) => item.id === selectedStaffId)) {

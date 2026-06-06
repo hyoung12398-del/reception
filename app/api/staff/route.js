@@ -13,6 +13,7 @@ export async function POST(request) {
   const body = await request.json();
   const id = String(body.id || "").trim();
   const name = String(body.name || "").trim();
+  const searchKana = String(body.searchKana || "").trim();
   const slackUserId = String(body.slackUserId || "").trim();
   const imageUrl = String(body.imageUrl || "").trim();
   const enabled = Boolean(body.enabled);
@@ -28,6 +29,7 @@ export async function POST(request) {
   const staff = {
     id: id || crypto.randomUUID(),
     name,
+    searchKana,
     slackUserId,
     imageUrl,
     enabled,
