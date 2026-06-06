@@ -87,7 +87,7 @@ export default function AdminClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settingsForm),
     });
-    const result = await response.json();
+    const result = await safeJson(response);
     if (!response.ok) {
       setSettingsMessage(result.error || "保存に失敗しました。");
       return;
@@ -442,5 +442,13 @@ async function fetchJson(url, options) {
     location.href = "/login";
     throw new Error("Unauthorized");
   }
-  return response.json();
+  return safeJson(response);
+}
+
+async function safeJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return { error: "サーバーから正しい応答がありませんでした。" };
+  }
 }

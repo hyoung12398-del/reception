@@ -10,6 +10,17 @@ export async function GET() {
 export async function POST(request) {
   if (!(await requireAdmin())) return json({ error: "Unauthorized" }, 401);
 
-  const settings = await saveSettings(await request.json());
-  return json({ ok: true, settings });
+  try {
+    const settings = await saveSettings(await request.json());
+    return json({ ok: true, settings });
+  } catch (error) {
+    console.error(error);
+    return json(
+      {
+        error:
+          "デザイン設定を保存できませんでした。Supabaseに app_settings テーブルが作成されているか確認してください。",
+      },
+      500,
+    );
+  }
 }
