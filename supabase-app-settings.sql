@@ -6,11 +6,8 @@ create table if not exists public.app_settings (
   surface_color text not null default '#ffffff',
   text_color text not null default '#1f2428',
   accent_color text not null default '#16635b',
-  trial_lesson_staff_ids text[] not null default '{}',
   updated_at timestamptz not null default now()
 );
-
-alter table public.app_settings add column if not exists trial_lesson_staff_ids text[] not null default '{}';
 
 insert into public.app_settings (
   id,
