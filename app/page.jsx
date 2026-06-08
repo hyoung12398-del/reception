@@ -130,6 +130,7 @@ export default function ReceptionPage() {
     "--bg": settings.backgroundColor,
     "--surface": settings.surfaceColor,
     "--text": settings.textColor,
+    "--muted": settings.labelColor,
     "--accent": settings.accentColor,
     "--accent-strong": settings.accentColor,
   };
@@ -224,5 +225,6 @@ const defaultSettings = {
   backgroundColor: "#f6f4ef",
   surfaceColor: "#ffffff",
   textColor: "#1f2428",
+  labelColor: "#667074",
   accentColor: "#16635b",
 };

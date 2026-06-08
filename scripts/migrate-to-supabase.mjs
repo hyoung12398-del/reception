@@ -108,6 +108,7 @@ function toSettingsRow(settings = {}) {
     background_color: settings.backgroundColor || "#f6f4ef",
     surface_color: settings.surfaceColor || "#ffffff",
     text_color: settings.textColor || "#1f2428",
+    label_color: settings.labelColor || "#667074",
     accent_color: settings.accentColor || "#16635b",
     updated_at: new Date().toISOString(),
   };

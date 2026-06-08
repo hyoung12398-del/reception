@@ -4,5 +4,6 @@
   "backgroundColor": "#f6f4ef",
   "surfaceColor": "#ffffff",
   "textColor": "#1f2428",
+  "labelColor": "#667074",
   "accentColor": "#16635b"
 }

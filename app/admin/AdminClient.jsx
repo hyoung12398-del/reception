@@ -159,6 +159,11 @@ export default function AdminClient() {
               onChange={(value) => setSettingsForm({ ...settingsForm, textColor: value })}
             />
             <ColorField
+              label="ラベル色"
+              value={settingsForm.labelColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, labelColor: value })}
+            />
+            <ColorField
               label="メイン色"
               value={settingsForm.accentColor}
               onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
@@ -460,6 +465,7 @@ function emptySettingsForm() {
     backgroundColor: "#f6f4ef",
     surfaceColor: "#ffffff",
     textColor: "#1f2428",
+    labelColor: "#667074",
     accentColor: "#16635b",
   };
 }
