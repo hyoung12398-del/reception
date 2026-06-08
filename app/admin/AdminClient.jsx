@@ -308,6 +308,16 @@ export default function AdminClient() {
               value={deviceForm.deviceKey}
             />
           </label>
+          <label className="field">
+            <span>端末別ロゴURL</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setDeviceForm({ ...deviceForm, logoUrl: event.target.value })}
+              placeholder="未設定なら全体ロゴを使用"
+              type="url"
+              value={deviceForm.logoUrl}
+            />
+          </label>
           <label className="toggle-row">
             <input
               checked={deviceForm.enabled}
@@ -361,6 +371,7 @@ export default function AdminClient() {
                       {item.schoolName} / {item.deviceName}
                     </strong>
                     <p>{item.deviceKey}</p>
+                    <p>{item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
@@ -443,6 +454,7 @@ function emptyDeviceForm() {
     schoolName: "",
     deviceName: "",
     deviceKey: "",
+    logoUrl: "",
     trialLessonStaffIds: [],
     enabled: true,
   };

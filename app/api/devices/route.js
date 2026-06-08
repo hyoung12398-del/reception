@@ -16,6 +16,7 @@ export async function POST(request) {
   const deviceKey = normalizeDeviceKey(body.deviceKey);
   const schoolName = String(body.schoolName || "").trim();
   const deviceName = String(body.deviceName || "").trim();
+  const logoUrl = String(body.logoUrl || "").trim();
   const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
     ? body.trialLessonStaffIds.map(String).filter(Boolean)
     : [];
@@ -40,6 +41,7 @@ export async function POST(request) {
     deviceKey,
     schoolName,
     deviceName,
+    logoUrl,
     trialLessonStaffIds,
     enabled,
   };

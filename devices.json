@@ -4,6 +4,7 @@
     "deviceKey": "deco-1st",
     "schoolName": "立川校",
     "deviceName": "DECO1st",
+    "logoUrl": "",
     "trialLessonStaffIds": [],
     "enabled": true
   },
@@ -12,6 +13,7 @@
     "deviceKey": "deco-2nd",
     "schoolName": "立川校",
     "deviceName": "DECO2nd",
+    "logoUrl": "",
     "trialLessonStaffIds": [],
     "enabled": true
   }

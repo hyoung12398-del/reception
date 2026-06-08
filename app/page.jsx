@@ -126,6 +126,7 @@ export default function ReceptionPage() {
   const hasQuery = Boolean(normalizeText(staffSearch));
   const sendDisabled = sending || !currentDevice || !visitorName.trim() || !selectedStaffId;
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
+  const logoUrl = currentDevice?.logoUrl || settings.logoUrl;
   const themeStyle = {
     "--bg": settings.backgroundColor,
     "--surface": settings.surfaceColor,
@@ -140,7 +141,7 @@ export default function ReceptionPage() {
       <main className="app-shell">
         <section className="topbar">
           <div className="brand-block">
-            {settings.logoUrl ? <img className="brand-logo" src={settings.logoUrl} alt="" /> : null}
+            {logoUrl ? <img className="brand-logo" src={logoUrl} alt="" /> : null}
             <p className="eyebrow">Reception</p>
             <h1>{settings.brandName || "受付"}</h1>
             <p className="device-label">{deviceLabel}</p>
