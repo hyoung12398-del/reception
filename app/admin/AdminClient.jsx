@@ -67,7 +67,7 @@ export default function AdminClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(deviceForm),
     });
-    const result = await response.json();
+    const result = await safeJson(response);
     if (!response.ok) {
       setDeviceMessage(result.error || "保存に失敗しました。");
       return;

@@ -46,6 +46,17 @@ export async function POST(request) {
     enabled,
   };
 
-  await saveDevice(device);
-  return json({ ok: true, device });
+  try {
+    await saveDevice(device);
+    return json({ ok: true, device });
+  } catch (error) {
+    console.error(error);
+    return json(
+      {
+        error:
+          "端末設定を保存できませんでした。Supabaseの devices テーブルに必要なカラムが作成されているか確認してください。",
+      },
+      500,
+    );
+  }
 }
