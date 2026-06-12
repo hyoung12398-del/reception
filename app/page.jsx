@@ -261,10 +261,16 @@ async function requestJson(url, options = {}, timeoutMs = 15000) {
     return { ok: true, data };
   } catch (error) {
     if (error.name === "AbortError") {
-      return { ok: false, error: "通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。" };
+      return {
+        ok: false,
+        error: "通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。解決しない場合は公式LINEへお問い合わせください。",
+      };
     }
 
-    return { ok: false, error: "通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。" };
+    return {
+      ok: false,
+      error: "通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。解決しない場合は公式LINEへお問い合わせください。",
+    };
   } finally {
     clearTimeout(timeout);
   }
