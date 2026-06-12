@@ -18,8 +18,13 @@ main();
 async function main() {
   deviceKey = new URLSearchParams(location.search).get("device") || "";
   await loadDevice();
-  const staff = await fetch("/api/staff").then((res) => res.json());
-  staffList = staff.filter((item) => item.enabled);
+  const staffResult = await requestJson("/api/staff", {}, 12000);
+  if (staffResult.ok) {
+    staffList = staffResult.data.filter((item) => item.enabled);
+  } else {
+    message.textContent =
+      staffResult.error || "担当者一覧を取得できませんでした。Wi-Fi接続を確認して、ページを再読み込みしてください。";
+  }
   renderStaff([]);
   staffSearch.addEventListener("input", filterStaff);
   visitorName.addEventListener("input", updateButton);
@@ -35,15 +40,14 @@ async function loadDevice() {
     return;
   }
 
-  const response = await fetch(`/api/device?device=${encodeURIComponent(deviceKey)}`);
-  const result = await response.json();
-  if (!response.ok) {
+  const result = await requestJson(`/api/device?device=${encodeURIComponent(deviceKey)}`, {}, 12000);
+  if (!result.ok) {
     deviceLabel.textContent = "端末未登録";
     message.textContent = result.error || "端末情報を取得できませんでした。";
     return;
   }
 
-  currentDevice = result.device;
+  currentDevice = result.data.device;
   deviceLabel.textContent = `${currentDevice.schoolName} / ${currentDevice.deviceName}`;
 }
 
@@ -95,7 +99,7 @@ async function sendCheckIn() {
   message.textContent = "通知を送信しています...";
   sendButton.disabled = true;
 
-  const response = await fetch("/api/check-in", {
+  const result = await requestJson("/api/check-in", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -105,8 +109,7 @@ async function sendCheckIn() {
     }),
   });
 
-  const result = await response.json();
-  if (!response.ok) {
+  if (!result.ok) {
     message.textContent = result.error || "送信に失敗しました。";
     updateButton();
     return;
@@ -126,7 +129,7 @@ async function sendTrialLesson() {
   sendButton.disabled = true;
   trialButton.disabled = true;
 
-  const response = await fetch("/api/trial-lesson", {
+  const result = await requestJson("/api/trial-lesson", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -135,8 +138,7 @@ async function sendTrialLesson() {
     }),
   });
 
-  const result = await response.json();
-  if (!response.ok) {
+  if (!result.ok) {
     message.textContent = result.error || "送信に失敗しました。";
     updateButton();
     return;
@@ -156,7 +158,7 @@ async function saveRoomRental() {
   trialButton.disabled = true;
   rentalButton.disabled = true;
 
-  const response = await fetch("/api/room-rental", {
+  const result = await requestJson("/api/room-rental", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -165,8 +167,7 @@ async function saveRoomRental() {
     }),
   });
 
-  const result = await response.json();
-  if (!response.ok) {
+  if (!result.ok) {
     message.textContent = result.error || "記録に失敗しました。";
     updateButton();
     return;
@@ -202,4 +203,36 @@ function renderAvatar(item) {
 
 function normalizeText(value) {
   return String(value).trim().toLocaleLowerCase("ja-JP");
+}
+
+async function requestJson(url, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const data = await safeJson(response);
+
+    if (!response.ok) {
+      return { ok: false, error: data.error || "サーバーで処理できませんでした。少し待ってからもう一度お試しください。" };
+    }
+
+    return { ok: true, data };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      return { ok: false, error: "通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。" };
+    }
+
+    return { ok: false, error: "通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。" };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function safeJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
 }

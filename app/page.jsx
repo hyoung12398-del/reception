@@ -46,27 +46,31 @@ export default function ReceptionPage() {
       return;
     }
 
-    const response = await fetch(`/api/device?device=${encodeURIComponent(key)}`);
-    const result = await response.json();
-    if (!response.ok) {
+    const result = await requestJson(`/api/device?device=${encodeURIComponent(key)}`, {}, 12000);
+    if (!result.ok) {
       setDeviceLabel("端末未登録");
       setMessage(result.error || "端末情報を取得できませんでした。");
       return;
     }
 
-    setCurrentDevice(result.device);
-    setDeviceLabel(`${result.device.schoolName} / ${result.device.deviceName}`);
+    setCurrentDevice(result.data.device);
+    setDeviceLabel(`${result.data.device.schoolName} / ${result.data.device.deviceName}`);
   }
 
   async function loadStaff() {
-    const staff = await fetch("/api/staff").then((res) => res.json());
-    setStaffList(staff.filter((item) => item.enabled));
+    const result = await requestJson("/api/staff", {}, 12000);
+    if (result.ok) {
+      setStaffList(result.data.filter((item) => item.enabled));
+      return;
+    }
+
+    setMessage(result.error || "担当者一覧を取得できませんでした。Wi-Fi接続を確認して、ページを再読み込みしてください。");
   }
 
   async function loadSettings() {
-    const response = await fetch("/api/settings");
-    if (response.ok) {
-      setSettings(await response.json());
+    const result = await requestJson("/api/settings", {}, 12000);
+    if (result.ok) {
+      setSettings(result.data);
     }
   }
 
@@ -74,7 +78,7 @@ export default function ReceptionPage() {
     setMessage("通知を送信しています...");
     setSending(true);
 
-    const response = await fetch("/api/check-in", {
+    const result = await requestJson("/api/check-in", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -84,9 +88,8 @@ export default function ReceptionPage() {
       }),
     });
 
-    const result = await response.json();
     setSending(false);
-    if (!response.ok) {
+    if (!result.ok) {
       setMessage(result.error || "送信に失敗しました。");
       return;
     }
@@ -99,15 +102,14 @@ export default function ReceptionPage() {
     setMessage("体験レッスン受付を通知しています...");
     setSending(true);
 
-    const response = await fetch("/api/trial-lesson", {
+    const result = await requestJson("/api/trial-lesson", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ visitorName, deviceKey }),
     });
 
-    const result = await response.json();
     setSending(false);
-    if (!response.ok) {
+    if (!result.ok) {
       setMessage(result.error || "送信に失敗しました。");
       return;
     }
@@ -120,15 +122,14 @@ export default function ReceptionPage() {
     setMessage("レッスン室レンタルを記録しています...");
     setSending(true);
 
-    const response = await fetch("/api/room-rental", {
+    const result = await requestJson("/api/room-rental", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ visitorName, deviceKey }),
     });
 
-    const result = await response.json();
     setSending(false);
-    if (!response.ok) {
+    if (!result.ok) {
       setMessage(result.error || "記録に失敗しました。");
       return;
     }
@@ -243,6 +244,38 @@ function Avatar({ item, className }) {
 
 function normalizeText(value) {
   return String(value).trim().toLocaleLowerCase("ja-JP");
+}
+
+async function requestJson(url, options = {}, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const data = await safeJson(response);
+
+    if (!response.ok) {
+      return { ok: false, error: data.error || "サーバーで処理できませんでした。少し待ってからもう一度お試しください。" };
+    }
+
+    return { ok: true, data };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      return { ok: false, error: "通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。" };
+    }
+
+    return { ok: false, error: "通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。" };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function safeJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
 }
 
 const defaultSettings = {
