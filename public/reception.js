@@ -9,6 +9,7 @@ const emptyStaff = document.querySelector("#emptyStaff");
 const visitorName = document.querySelector("#visitorName");
 const sendButton = document.querySelector("#sendButton");
 const trialButton = document.querySelector("#trialButton");
+const rentalButton = document.querySelector("#rentalButton");
 const message = document.querySelector("#message");
 const deviceLabel = document.querySelector("#deviceLabel");
 
@@ -24,6 +25,7 @@ async function main() {
   visitorName.addEventListener("input", updateButton);
   sendButton.addEventListener("click", sendCheckIn);
   trialButton.addEventListener("click", sendTrialLesson);
+  rentalButton.addEventListener("click", saveRoomRental);
 }
 
 async function loadDevice() {
@@ -148,9 +150,40 @@ async function sendTrialLesson() {
   updateButton();
 }
 
+async function saveRoomRental() {
+  message.textContent = "レッスン室レンタルを記録しています...";
+  sendButton.disabled = true;
+  trialButton.disabled = true;
+  rentalButton.disabled = true;
+
+  const response = await fetch("/api/room-rental", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      visitorName: visitorName.value,
+      deviceKey,
+    }),
+  });
+
+  const result = await response.json();
+  if (!response.ok) {
+    message.textContent = result.error || "記録に失敗しました。";
+    updateButton();
+    return;
+  }
+
+  visitorName.value = "";
+  selectedStaffId = "";
+  staffSearch.value = "";
+  renderStaff([]);
+  message.textContent = "レッスン室レンタルを記録しました。";
+  updateButton();
+}
+
 function updateButton() {
   sendButton.disabled = !currentDevice || !visitorName.value.trim() || !selectedStaffId;
   trialButton.disabled = !currentDevice || !visitorName.value.trim();
+  rentalButton.disabled = !currentDevice || !visitorName.value.trim();
 }
 
 function escapeHtml(value) {

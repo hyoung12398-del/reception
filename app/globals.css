@@ -263,6 +263,24 @@ input {
   color: #899692;
 }
 
+.secondary-action {
+  background: #eef0ee;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 12px;
+  min-height: 54px;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.secondary-action:disabled {
+  color: #899692;
+}
+
 .secondary {
   background: #fff;
   border: 1px solid var(--line);

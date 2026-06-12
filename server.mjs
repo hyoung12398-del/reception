@@ -69,6 +69,10 @@ createServer(async (req, res) => {
       return handleTrialLesson(req, res);
     }
 
+    if (req.method === "POST" && url.pathname === "/api/room-rental") {
+      return handleRoomRental(req, res);
+    }
+
     if (req.method === "GET") {
       const path = url.pathname === "/" ? "/index.html" : url.pathname;
       if (path === "/admin.html" && !isAdmin(req)) {
@@ -186,6 +190,38 @@ async function handleTrialLesson(req, res) {
     return json(res, { error: `Slack通知に失敗しました: ${visit.slackError}`, visit }, 502);
   }
 
+  json(res, { ok: true, visit });
+}
+
+async function handleRoomRental(req, res) {
+  const body = await readBody(req);
+  const visitorName = String(body.visitorName || "").trim();
+  const deviceKey = String(body.deviceKey || "").trim();
+
+  if (!visitorName) {
+    return json(res, { error: "来訪者名を入力してください。" }, 400);
+  }
+
+  const device = await findDevice(deviceKey);
+  if (!device) {
+    return json(res, { error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
+  }
+
+  const visit = {
+    id: crypto.randomUUID(),
+    visitorName,
+    staffId: null,
+    staffName: "レッスン室レンタル",
+    schoolName: device.schoolName,
+    deviceName: device.deviceName,
+    status: "logged",
+    type: "room_rental",
+    createdAt: new Date().toISOString(),
+    slackOk: true,
+    slackError: null,
+  };
+
+  await addVisit(visit);
   json(res, { ok: true, visit });
 }
 

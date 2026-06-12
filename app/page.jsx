@@ -116,6 +116,27 @@ export default function ReceptionPage() {
     setMessage("体験レッスン受付をSlack通知しました。");
   }
 
+  async function saveRoomRental() {
+    setMessage("レッスン室レンタルを記録しています...");
+    setSending(true);
+
+    const response = await fetch("/api/room-rental", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitorName, deviceKey }),
+    });
+
+    const result = await response.json();
+    setSending(false);
+    if (!response.ok) {
+      setMessage(result.error || "記録に失敗しました。");
+      return;
+    }
+
+    resetForm();
+    setMessage("レッスン室レンタルを記録しました。");
+  }
+
   function resetForm() {
     setVisitorName("");
     setSelectedStaffId("");
@@ -126,6 +147,7 @@ export default function ReceptionPage() {
   const hasQuery = Boolean(normalizeText(staffSearch));
   const sendDisabled = sending || !currentDevice || !visitorName.trim() || !selectedStaffId;
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
+  const rentalDisabled = sending || !currentDevice || !visitorName.trim();
   const logoUrl = currentDevice?.logoUrl || settings.logoUrl;
   const themeStyle = {
     "--bg": settings.backgroundColor,
@@ -198,6 +220,9 @@ export default function ReceptionPage() {
           </button>
           <button className="trial-button" disabled={trialDisabled} onClick={sendTrialLesson} type="button">
             体験レッスンはこちら
+          </button>
+          <button className="secondary-action" disabled={rentalDisabled} onClick={saveRoomRental} type="button">
+            レッスン室レンタル
           </button>
           <p className="message" aria-live="polite">
             {message}
