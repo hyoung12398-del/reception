@@ -130,6 +130,55 @@ h1 {
   padding: 24px;
 }
 
+.choice-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.choice-button {
+  background: var(--accent);
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 900;
+  min-height: 72px;
+  padding: 14px 18px;
+  text-align: center;
+  width: 100%;
+}
+
+.choice-button.accent-outline {
+  background: #ffffff;
+  border: 2px solid var(--accent);
+  color: var(--accent-strong);
+}
+
+.choice-button.quiet {
+  background: #eef0ee;
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.choice-button:disabled {
+  background: #a9b8b4;
+  border-color: #a9b8b4;
+  color: #eef0ee;
+}
+
+.back-button {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  margin-bottom: 18px;
+  min-height: 44px;
+  padding: 0 16px;
+}
+
 .admin-section {
   margin-bottom: 18px;
 }

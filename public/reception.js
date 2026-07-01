@@ -2,7 +2,15 @@ let selectedStaffId = "";
 let staffList = [];
 let deviceKey = "";
 let currentDevice = null;
+let mode = "";
 
+const choiceGrid = document.querySelector("#choiceGrid");
+const formArea = document.querySelector("#formArea");
+const staffArea = document.querySelector("#staffArea");
+const chooseStaff = document.querySelector("#chooseStaff");
+const chooseTrial = document.querySelector("#chooseTrial");
+const chooseRental = document.querySelector("#chooseRental");
+const backButton = document.querySelector("#backButton");
 const staffGrid = document.querySelector("#staffGrid");
 const staffSearch = document.querySelector("#staffSearch");
 const emptyStaff = document.querySelector("#emptyStaff");
@@ -26,11 +34,16 @@ async function main() {
       staffResult.error || "担当者一覧を取得できませんでした。Wi-Fi接続を確認して、ページを再読み込みしてください。";
   }
   renderStaff([]);
+  chooseStaff.addEventListener("click", () => chooseMode("staff"));
+  chooseTrial.addEventListener("click", () => chooseMode("trial"));
+  chooseRental.addEventListener("click", () => chooseMode("rental"));
+  backButton.addEventListener("click", backToMenu);
   staffSearch.addEventListener("input", filterStaff);
   visitorName.addEventListener("input", updateButton);
   sendButton.addEventListener("click", sendCheckIn);
   trialButton.addEventListener("click", sendTrialLesson);
   rentalButton.addEventListener("click", saveRoomRental);
+  updateModeView();
 }
 
 async function loadDevice() {
@@ -44,11 +57,58 @@ async function loadDevice() {
   if (!result.ok) {
     deviceLabel.textContent = "端末未登録";
     message.textContent = result.error || "端末情報を取得できませんでした。";
+    updateModeView();
     return;
   }
 
   currentDevice = result.data.device;
   deviceLabel.textContent = `${currentDevice.schoolName} / ${currentDevice.deviceName}`;
+  updateModeView();
+}
+
+function chooseMode(nextMode) {
+  mode = nextMode;
+  visitorName.value = "";
+  selectedStaffId = "";
+  staffSearch.value = "";
+  renderStaff([]);
+  message.textContent = "";
+  updateModeView();
+}
+
+function backToMenu() {
+  mode = "";
+  visitorName.value = "";
+  selectedStaffId = "";
+  staffSearch.value = "";
+  renderStaff([]);
+  message.textContent = "";
+  updateModeView();
+}
+
+function returnToMenuWithMessage(text) {
+  mode = "";
+  visitorName.value = "";
+  selectedStaffId = "";
+  staffSearch.value = "";
+  renderStaff([]);
+  updateModeView();
+  message.textContent = text;
+}
+
+function updateModeView() {
+  choiceGrid.classList.toggle("hidden", Boolean(mode));
+  formArea.classList.toggle("hidden", !mode);
+  staffArea.classList.toggle("hidden", mode !== "staff");
+  sendButton.classList.toggle("hidden", mode !== "staff");
+  trialButton.classList.toggle("hidden", mode !== "trial");
+  rentalButton.classList.toggle("hidden", mode !== "rental");
+
+  for (const button of [chooseStaff, chooseTrial, chooseRental]) {
+    button.disabled = !currentDevice;
+  }
+
+  updateButton();
 }
 
 function filterStaff() {
@@ -120,13 +180,7 @@ async function sendCheckIn() {
     return;
   }
 
-  visitorName.value = "";
-  selectedStaffId = "";
-  staffSearch.value = "";
-  renderStaff([]);
-  for (const card of staffGrid.querySelectorAll("button")) card.classList.remove("selected");
-  message.textContent = "担当者へSlack通知を送信しました。";
-  updateButton();
+  returnToMenuWithMessage("担当者へSlack通知を送信しました。");
 }
 
 async function sendTrialLesson() {
@@ -154,12 +208,7 @@ async function sendTrialLesson() {
     return;
   }
 
-  visitorName.value = "";
-  selectedStaffId = "";
-  staffSearch.value = "";
-  renderStaff([]);
-  message.textContent = "体験レッスン受付をSlack通知しました。";
-  updateButton();
+  returnToMenuWithMessage("体験レッスン受付をSlack通知しました。");
 }
 
 async function saveRoomRental() {
@@ -188,18 +237,13 @@ async function saveRoomRental() {
     return;
   }
 
-  visitorName.value = "";
-  selectedStaffId = "";
-  staffSearch.value = "";
-  renderStaff([]);
-  message.textContent = "レッスン室レンタルを記録しました。";
-  updateButton();
+  returnToMenuWithMessage("レッスン室レンタルを記録しました。");
 }
 
 function updateButton() {
-  sendButton.disabled = !currentDevice || !visitorName.value.trim() || !selectedStaffId;
-  trialButton.disabled = !currentDevice || !visitorName.value.trim();
-  rentalButton.disabled = !currentDevice || !visitorName.value.trim();
+  sendButton.disabled = mode !== "staff" || !currentDevice || !visitorName.value.trim() || !selectedStaffId;
+  trialButton.disabled = mode !== "trial" || !currentDevice || !visitorName.value.trim();
+  rentalButton.disabled = mode !== "rental" || !currentDevice || !visitorName.value.trim();
 }
 
 function escapeHtml(value) {

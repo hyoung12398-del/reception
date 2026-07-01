@@ -11,6 +11,7 @@ export default function ReceptionPage() {
   const [deviceLabel, setDeviceLabel] = useState("端末を確認しています...");
   const [visitorName, setVisitorName] = useState("");
   const [staffSearch, setStaffSearch] = useState("");
+  const [mode, setMode] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [settings, setSettings] = useState(defaultSettings);
@@ -158,6 +159,25 @@ export default function ReceptionPage() {
     setSelectedStaffId("");
     setStaffSearch("");
     setFilteredStaff([]);
+    setMode("");
+  }
+
+  function chooseMode(nextMode) {
+    setMode(nextMode);
+    setVisitorName("");
+    setSelectedStaffId("");
+    setStaffSearch("");
+    setFilteredStaff([]);
+    setMessage("");
+  }
+
+  function backToMenu() {
+    setMode("");
+    setVisitorName("");
+    setSelectedStaffId("");
+    setStaffSearch("");
+    setFilteredStaff([]);
+    setMessage("");
   }
 
   const hasQuery = Boolean(normalizeText(staffSearch));
@@ -187,59 +207,87 @@ export default function ReceptionPage() {
         </section>
 
         <section className="panel">
-          <label className="field">
-            <span>来訪者名</span>
-            <input
-              autoComplete="name"
-              onChange={(event) => setVisitorName(event.target.value)}
-              placeholder="例：山田 太郎"
-              type="text"
-              value={visitorName}
-            />
-          </label>
-
-          <div>
-            <div className="section-title">担当者を選択</div>
-            <label className="search-field">
-              <span>先生を検索</span>
-              <input
-                autoComplete="off"
-                onChange={(event) => setStaffSearch(event.target.value)}
-                placeholder="名前で検索"
-                type="search"
-                value={staffSearch}
-              />
-            </label>
-            <div className="staff-grid">
-              {filteredStaff.map((item) => (
-                <button
-                  className={`staff-card ${item.id === selectedStaffId ? "selected" : ""}`}
-                  data-id={item.id}
-                  key={item.id}
-                  onClick={() => setSelectedStaffId(item.id)}
-                  type="button"
-                >
-                  <Avatar item={item} className="staff-avatar" />
-                  <span>{item.name}</span>
-                </button>
-              ))}
+          {!mode ? (
+            <div className="choice-grid">
+              <button className="choice-button" disabled={!currentDevice} onClick={() => chooseMode("staff")} type="button">
+                担当講師の名前を検索する
+              </button>
+              <button className="choice-button accent-outline" disabled={!currentDevice} onClick={() => chooseMode("trial")} type="button">
+                体験レッスンはこちら
+              </button>
+              <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("rental")} type="button">
+                レッスン室レンタルの生徒さんはこちら
+              </button>
             </div>
-            {!filteredStaff.length && (
-              <p className="empty">
-                {hasQuery ? "該当する先生が見つかりません。" : "名前を入力すると先生が表示されます。"}
-              </p>
-            )}
-          </div>
+          ) : (
+            <>
+              <button className="back-button" onClick={backToMenu} type="button">
+                戻る
+              </button>
 
-          <button className="primary" disabled={sendDisabled} onClick={sendCheckIn} type="button">
-            呼び出す
-          </button>
-          <button className="trial-button" disabled={trialDisabled} onClick={sendTrialLesson} type="button">
-            体験レッスンはこちら
-          </button>
-          <button className="secondary-action" disabled={rentalDisabled} onClick={saveRoomRental} type="button">
-            レッスン室レンタル
-          </button>
+              {mode === "staff" && (
+                <div>
+                  <div className="section-title">担当講師の名前を検索する</div>
+                  <label className="search-field">
+                    <span>先生の名前</span>
+                    <input
+                      autoComplete="off"
+                      onChange={(event) => setStaffSearch(event.target.value)}
+                      placeholder="名前で検索"
+                      type="search"
+                      value={staffSearch}
+                    />
+                  </label>
+                  <div className="staff-grid">
+                    {filteredStaff.map((item) => (
+                      <button
+                        className={`staff-card ${item.id === selectedStaffId ? "selected" : ""}`}
+                        data-id={item.id}
+                        key={item.id}
+                        onClick={() => setSelectedStaffId(item.id)}
+                        type="button"
+                      >
+                        <Avatar item={item} className="staff-avatar" />
+                        <span>{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {!filteredStaff.length && (
+                    <p className="empty">
+                      {hasQuery ? "該当する先生が見つかりません。" : "名前を入力すると先生が表示されます。"}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <label className="field">
+                <span>来訪者の名前</span>
+                <input
+                  autoComplete="name"
+                  onChange={(event) => setVisitorName(event.target.value)}
+                  placeholder="例：山田 太郎"
+                  type="text"
+                  value={visitorName}
+                />
+              </label>
+
+              {mode === "staff" && (
+                <button className="primary" disabled={sendDisabled} onClick={sendCheckIn} type="button">
+                  呼び出す
+                </button>
+              )}
+              {mode === "trial" && (
+                <button className="trial-button" disabled={trialDisabled} onClick={sendTrialLesson} type="button">
+                  体験レッスン受付
+                </button>
+              )}
+              {mode === "rental" && (
+                <button className="secondary-action" disabled={rentalDisabled} onClick={saveRoomRental} type="button">
+                  レッスン室レンタルを記録
+                </button>
+              )}
+            </>
+          )}
           <p className="message" aria-live="polite">
             {message}
           </p>
