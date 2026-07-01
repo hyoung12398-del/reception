@@ -299,6 +299,7 @@ async function handleSaveDevice(req, res) {
   const schoolName = String(body.schoolName || "").trim();
   const deviceName = String(body.deviceName || "").trim();
   const logoUrl = String(body.logoUrl || "").trim();
+  const supportPhoneNumber = String(body.supportPhoneNumber || "").trim();
   const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
     ? body.trialLessonStaffIds.map(String).filter(Boolean)
     : [];
@@ -324,6 +325,7 @@ async function handleSaveDevice(req, res) {
     schoolName,
     deviceName,
     logoUrl,
+    supportPhoneNumber,
     trialLessonStaffIds,
     enabled,
   };
@@ -571,6 +573,7 @@ function fromDeviceRow(row) {
     schoolName: row.school_name,
     deviceName: row.device_name,
     logoUrl: row.logo_url || "",
+    supportPhoneNumber: row.support_phone_number || "",
     trialLessonStaffIds: row.trial_lesson_staff_ids || [],
     enabled: row.enabled,
   };
@@ -583,6 +586,7 @@ function toDeviceRow(device) {
     school_name: device.schoolName,
     device_name: device.deviceName,
     logo_url: device.logoUrl || null,
+    support_phone_number: device.supportPhoneNumber || null,
     trial_lesson_staff_ids: device.trialLessonStaffIds || [],
     enabled: device.enabled,
   };

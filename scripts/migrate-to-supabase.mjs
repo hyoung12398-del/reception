@@ -79,6 +79,7 @@ function toDeviceRow(device) {
     school_name: device.schoolName,
     device_name: device.deviceName,
     logo_url: device.logoUrl || null,
+    support_phone_number: device.supportPhoneNumber || null,
     trial_lesson_staff_ids: device.trialLessonStaffIds || [],
     enabled: device.enabled,
   };

@@ -318,6 +318,16 @@ export default function AdminClient() {
               value={deviceForm.logoUrl}
             />
           </label>
+          <label className="field">
+            <span>通信エラー時の問い合わせ電話番号</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setDeviceForm({ ...deviceForm, supportPhoneNumber: event.target.value })}
+              placeholder="例：042-000-0000"
+              type="tel"
+              value={deviceForm.supportPhoneNumber}
+            />
+          </label>
           <label className="toggle-row">
             <input
               checked={deviceForm.enabled}
@@ -372,6 +382,7 @@ export default function AdminClient() {
                     </strong>
                     <p>{item.deviceKey}</p>
                     <p>{item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
+                    <p>{item.supportPhoneNumber ? `問い合わせ電話 ${item.supportPhoneNumber}` : "問い合わせ電話 未設定"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
@@ -384,7 +395,13 @@ export default function AdminClient() {
                     <button
                       className="secondary small"
                       onClick={() => {
-                        setDeviceForm(item);
+                        setDeviceForm({
+                          ...emptyDeviceForm(),
+                          ...item,
+                          logoUrl: item.logoUrl || "",
+                          supportPhoneNumber: item.supportPhoneNumber || "",
+                          trialLessonStaffIds: item.trialLessonStaffIds || [],
+                        });
                         setDeviceMessage(`${item.schoolName} / ${item.deviceName} を編集中です。`);
                       }}
                       type="button"
@@ -455,6 +472,7 @@ function emptyDeviceForm() {
     deviceName: "",
     deviceKey: "",
     logoUrl: "",
+    supportPhoneNumber: "",
     trialLessonStaffIds: [],
     enabled: true,
   };

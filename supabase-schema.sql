@@ -17,6 +17,7 @@ create table if not exists public.devices (
   school_name text not null,
   device_name text not null,
   logo_url text,
+  support_phone_number text,
   trial_lesson_staff_ids text[] not null default '{}',
   enabled boolean not null default true,
   created_at timestamptz not null default now(),
@@ -25,6 +26,7 @@ create table if not exists public.devices (
 
 alter table public.devices add column if not exists trial_lesson_staff_ids text[] not null default '{}';
 alter table public.devices add column if not exists logo_url text;
+alter table public.devices add column if not exists support_phone_number text;
 
 create table if not exists public.visits (
   id text primary key,

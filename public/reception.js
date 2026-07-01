@@ -18,7 +18,7 @@ main();
 async function main() {
   deviceKey = new URLSearchParams(location.search).get("device") || "";
   await loadDevice();
-  const staffResult = await requestJson("/api/staff", {}, 12000);
+  const staffResult = await requestJson("/api/staff", {}, 12000, currentDevice?.supportPhoneNumber);
   if (staffResult.ok) {
     staffList = staffResult.data.filter((item) => item.enabled);
   } else {
@@ -99,15 +99,20 @@ async function sendCheckIn() {
   message.textContent = "通知を送信しています...";
   sendButton.disabled = true;
 
-  const result = await requestJson("/api/check-in", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      staffId: selectedStaffId,
-      visitorName: visitorName.value,
-      deviceKey,
-    }),
-  });
+  const result = await requestJson(
+    "/api/check-in",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        staffId: selectedStaffId,
+        visitorName: visitorName.value,
+        deviceKey,
+      }),
+    },
+    15000,
+    currentDevice?.supportPhoneNumber,
+  );
 
   if (!result.ok) {
     message.textContent = result.error || "送信に失敗しました。";
@@ -129,14 +134,19 @@ async function sendTrialLesson() {
   sendButton.disabled = true;
   trialButton.disabled = true;
 
-  const result = await requestJson("/api/trial-lesson", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      visitorName: visitorName.value,
-      deviceKey,
-    }),
-  });
+  const result = await requestJson(
+    "/api/trial-lesson",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        visitorName: visitorName.value,
+        deviceKey,
+      }),
+    },
+    15000,
+    currentDevice?.supportPhoneNumber,
+  );
 
   if (!result.ok) {
     message.textContent = result.error || "送信に失敗しました。";
@@ -158,14 +168,19 @@ async function saveRoomRental() {
   trialButton.disabled = true;
   rentalButton.disabled = true;
 
-  const result = await requestJson("/api/room-rental", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      visitorName: visitorName.value,
-      deviceKey,
-    }),
-  });
+  const result = await requestJson(
+    "/api/room-rental",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        visitorName: visitorName.value,
+        deviceKey,
+      }),
+    },
+    15000,
+    currentDevice?.supportPhoneNumber,
+  );
 
   if (!result.ok) {
     message.textContent = result.error || "記録に失敗しました。";
@@ -205,7 +220,7 @@ function normalizeText(value) {
   return String(value).trim().toLocaleLowerCase("ja-JP");
 }
 
-async function requestJson(url, options = {}, timeoutMs = 15000) {
+async function requestJson(url, options = {}, timeoutMs = 15000, supportPhoneNumber = "") {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -222,17 +237,24 @@ async function requestJson(url, options = {}, timeoutMs = 15000) {
     if (error.name === "AbortError") {
       return {
         ok: false,
-        error: "通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。解決しない場合は公式LINEへお問い合わせください。",
+        error: networkErrorMessage("通信に時間がかかっています。Wi-Fi接続を確認して、もう一度お試しください。", supportPhoneNumber),
       };
     }
 
     return {
       ok: false,
-      error: "通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。解決しない場合は公式LINEへお問い合わせください。",
+      error: networkErrorMessage("通信に失敗しました。Wi-Fi接続を確認して、もう一度お試しください。", supportPhoneNumber),
     };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function networkErrorMessage(baseMessage, supportPhoneNumber) {
+  const phone = String(supportPhoneNumber || "").trim();
+  if (!phone) return `${baseMessage}解決しない場合は受付スタッフまでお声がけください。`;
+
+  return `${baseMessage}解決しない場合はこちらにお電話ください: ${phone}`;
 }
 
 async function safeJson(response) {

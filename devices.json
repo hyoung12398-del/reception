@@ -5,6 +5,7 @@
     "schoolName": "立川校",
     "deviceName": "DECO1st",
     "logoUrl": "",
+    "supportPhoneNumber": "",
     "trialLessonStaffIds": [],
     "enabled": true
   },
@@ -14,6 +15,7 @@
     "schoolName": "立川校",
     "deviceName": "DECO2nd",
     "logoUrl": "",
+    "supportPhoneNumber": "",
     "trialLessonStaffIds": [],
     "enabled": true
   }
