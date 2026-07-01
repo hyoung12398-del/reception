@@ -113,19 +113,25 @@ h1 {
 
 .choice-grid {
   display: grid;
-  gap: 14px;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .choice-button {
+  align-items: center;
+  aspect-ratio: 1 / 1;
   background: var(--accent);
   border: 0;
   border-radius: 8px;
   color: #fff;
+  display: flex;
   font: inherit;
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 900;
-  min-height: 72px;
-  padding: 14px 18px;
+  justify-content: center;
+  line-height: 1.35;
+  min-height: 0;
+  padding: 18px;
   text-align: center;
   width: 100%;
 }
@@ -432,6 +438,15 @@ input {
 
   .staff-grid {
     grid-template-columns: 1fr;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .choice-button {
+    aspect-ratio: auto;
+    min-height: 88px;
   }
 
   .form-actions,
