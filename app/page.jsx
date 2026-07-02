@@ -314,7 +314,11 @@ function Avatar({ item, className }) {
 }
 
 function normalizeText(value) {
-  return String(value).trim().toLocaleLowerCase("ja-JP");
+  return toKatakana(String(value).normalize("NFKC").trim().toLocaleLowerCase("ja-JP"));
+}
+
+function toKatakana(value) {
+  return value.replace(/[\u3041-\u3096]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 0x60));
 }
 
 async function requestJson(url, options = {}, timeoutMs = 15000, supportPhoneNumber = "") {
