@@ -42,10 +42,20 @@ export async function POST(request) {
     console.error(error);
     return json(
       {
-        error:
-          "担当者を保存できませんでした。Supabaseの staff テーブル設定、または入力内容を確認してください。",
+        error: `担当者を保存できませんでした。Supabaseの staff テーブル設定を確認してください。詳細: ${formatStaffSaveError(error)}`,
       },
       500,
     );
   }
+}
+
+function formatStaffSaveError(error) {
+  const message = String(error?.message || "不明なエラーです。");
+  if (message.includes("search_kana")) return "staff テーブルに search_kana 列がありません。";
+  if (message.includes("image_url")) return "staff テーブルに image_url 列がありません。";
+  if (message.includes("slack_user_id")) return "staff テーブルに slack_user_id 列がありません。";
+  if (message.includes("enabled")) return "staff テーブルに enabled 列がありません。";
+  if (message.includes("Could not find the table")) return "staff テーブルが作成されていません。";
+  if (message.includes("request timed out")) return "Supabaseへの通信がタイムアウトしました。";
+  return message;
 }
