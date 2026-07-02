@@ -135,38 +135,35 @@ async function saveStaff(event) {
   event.preventDefault();
   staffMessage.textContent = "保存しています...";
 
-  const response = await fetch("/api/staff", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  try {
+    const { response, result } = await postJson("/api/staff", {
       id: staffId.value,
       name: staffName.value,
       searchKana: staffSearchKana.value,
       slackUserId: staffSlackUserId.value,
       imageUrl: staffImageUrl.value,
       enabled: staffEnabled.checked,
-    }),
-  });
+    });
 
-  const result = await response.json();
-  if (!response.ok) {
-    staffMessage.textContent = result.error || "保存に失敗しました。";
-    return;
+    if (!response.ok) {
+      staffMessage.textContent = result.error || "保存に失敗しました。";
+      return;
+    }
+
+    clearStaffForm();
+    staffMessage.textContent = "担当者を保存しました。";
+    await loadStaff();
+  } catch (error) {
+    staffMessage.textContent = error.message || "保存に失敗しました。通信状況を確認して、もう一度お試しください。";
   }
-
-  clearStaffForm();
-  staffMessage.textContent = "担当者を保存しました。";
-  await loadStaff();
 }
 
 async function saveDevice(event) {
   event.preventDefault();
   deviceMessage.textContent = "保存しています...";
 
-  const response = await fetch("/api/devices", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  try {
+    const { response, result } = await postJson("/api/devices", {
       id: deviceId.value,
       schoolName: schoolName.value,
       deviceName: deviceName.value,
@@ -174,18 +171,19 @@ async function saveDevice(event) {
       logoUrl: deviceLogoUrl.value,
       supportPhoneNumber: deviceSupportPhoneNumber.value,
       enabled: deviceEnabled.checked,
-    }),
-  });
+    });
 
-  const result = await response.json();
-  if (!response.ok) {
-    deviceMessage.textContent = result.error || "保存に失敗しました。";
-    return;
+    if (!response.ok) {
+      deviceMessage.textContent = result.error || "保存に失敗しました。";
+      return;
+    }
+
+    clearDeviceForm();
+    deviceMessage.textContent = "端末を保存しました。";
+    await loadDevices();
+  } catch (error) {
+    deviceMessage.textContent = error.message || "保存に失敗しました。通信状況を確認して、もう一度お試しください。";
   }
-
-  clearDeviceForm();
-  deviceMessage.textContent = "端末を保存しました。";
-  await loadDevices();
 }
 
 async function logout() {
@@ -199,7 +197,38 @@ async function fetchJson(url, options) {
     location.href = "/login.html";
     throw new Error("Unauthorized");
   }
-  return response.json();
+  return safeJson(response);
+}
+
+async function postJson(url, body) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const result = await safeJson(response);
+    return { response, result };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("保存に時間がかかっています。通信状況を確認して、もう一度お試しください。");
+    }
+    throw new Error("保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function safeJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return { error: "サーバーから正しい応答がありませんでした。" };
+  }
 }
 
 function clearStaffForm() {

@@ -42,59 +42,56 @@ export default function AdminClient() {
     event.preventDefault();
     setStaffMessage("保存しています...");
 
-    const response = await fetch("/api/staff", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(staffForm),
-    });
-    const result = await response.json();
-    if (!response.ok) {
-      setStaffMessage(result.error || "保存に失敗しました。");
-      return;
-    }
+    try {
+      const { response, result } = await postJson("/api/staff", staffForm);
+      if (!response.ok) {
+        setStaffMessage(result.error || "保存に失敗しました。");
+        return;
+      }
 
-    setStaffForm(emptyStaffForm());
-    setStaffMessage("担当者を保存しました。");
-    await loadStaff();
+      setStaffForm(emptyStaffForm());
+      setStaffMessage("担当者を保存しました。");
+      await loadStaff();
+    } catch (error) {
+      setStaffMessage(error.message || "保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+    }
   }
 
   async function saveDevice(event) {
     event.preventDefault();
     setDeviceMessage("保存しています...");
 
-    const response = await fetch("/api/devices", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(deviceForm),
-    });
-    const result = await safeJson(response);
-    if (!response.ok) {
-      setDeviceMessage(result.error || "保存に失敗しました。");
-      return;
-    }
+    try {
+      const { response, result } = await postJson("/api/devices", deviceForm);
+      if (!response.ok) {
+        setDeviceMessage(result.error || "保存に失敗しました。");
+        return;
+      }
 
-    setDeviceForm(emptyDeviceForm());
-    setDeviceMessage("端末を保存しました。");
-    await loadDevices();
+      setDeviceForm(emptyDeviceForm());
+      setDeviceMessage("端末を保存しました。");
+      await loadDevices();
+    } catch (error) {
+      setDeviceMessage(error.message || "保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+    }
   }
 
   async function saveSettings(event) {
     event.preventDefault();
     setSettingsMessage("保存しています...");
 
-    const response = await fetch("/api/settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settingsForm),
-    });
-    const result = await safeJson(response);
-    if (!response.ok) {
-      setSettingsMessage(result.error || "保存に失敗しました。");
-      return;
-    }
+    try {
+      const { response, result } = await postJson("/api/settings", settingsForm);
+      if (!response.ok) {
+        setSettingsMessage(result.error || "保存に失敗しました。");
+        return;
+      }
 
-    setSettingsForm(result.settings);
-    setSettingsMessage("デザイン設定を保存しました。");
+      setSettingsForm(result.settings);
+      setSettingsMessage("デザイン設定を保存しました。");
+    } catch (error) {
+      setSettingsMessage(error.message || "保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+    }
   }
 
   async function logout() {
@@ -525,6 +522,29 @@ async function fetchJson(url, options) {
     throw new Error("Unauthorized");
   }
   return safeJson(response);
+}
+
+async function postJson(url, body) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const result = await safeJson(response);
+    return { response, result };
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("保存に時間がかかっています。通信状況を確認して、もう一度お試しください。");
+    }
+    throw new Error("保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function safeJson(response) {
