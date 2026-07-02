@@ -161,11 +161,52 @@ export default function AdminClient() {
               onChange={(value) => setSettingsForm({ ...settingsForm, labelColor: value })}
             />
             <ColorField
+              label="タイトル色"
+              value={settingsForm.titleColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, titleColor: value })}
+            />
+            <ColorField
+              label="端末表示の色"
+              value={settingsForm.deviceLabelColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, deviceLabelColor: value })}
+            />
+            <ColorField
+              label="入力ラベルの色"
+              value={settingsForm.inputLabelColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, inputLabelColor: value })}
+            />
+            <ColorField
               label="メイン色"
               value={settingsForm.accentColor}
               onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
             />
+            <ColorField
+              label="メインボタン文字色"
+              value={settingsForm.primaryButtonTextColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, primaryButtonTextColor: value })}
+            />
+            <ColorField
+              label="白ボタン文字色"
+              value={settingsForm.outlineButtonTextColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, outlineButtonTextColor: value })}
+            />
+            <ColorField
+              label="薄いボタン文字色"
+              value={settingsForm.quietButtonTextColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, quietButtonTextColor: value })}
+            />
+            <ColorField
+              label="先生カード文字色"
+              value={settingsForm.staffCardTextColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, staffCardTextColor: value })}
+            />
+            <ColorField
+              label="メッセージ色"
+              value={settingsForm.messageColor}
+              onChange={(value) => setSettingsForm({ ...settingsForm, messageColor: value })}
+            />
           </div>
+          <DesignPreview settings={settingsForm} />
           <button className="primary" type="submit">
             保存
           </button>
@@ -493,8 +534,63 @@ function emptySettingsForm() {
     surfaceColor: "#ffffff",
     textColor: "#1f2428",
     labelColor: "#667074",
+    titleColor: "#1f2428",
+    deviceLabelColor: "#667074",
+    inputLabelColor: "#667074",
     accentColor: "#16635b",
+    primaryButtonTextColor: "#ffffff",
+    outlineButtonTextColor: "#0f4842",
+    quietButtonTextColor: "#1f2428",
+    staffCardTextColor: "#1f2428",
+    messageColor: "#0f4842",
   };
+}
+
+function DesignPreview({ settings }) {
+  const style = {
+    "--preview-bg": settings.backgroundColor,
+    "--preview-surface": settings.surfaceColor,
+    "--preview-text": settings.textColor,
+    "--preview-label": settings.labelColor,
+    "--preview-title": settings.titleColor,
+    "--preview-device-label": settings.deviceLabelColor,
+    "--preview-input-label": settings.inputLabelColor,
+    "--preview-accent": settings.accentColor,
+    "--preview-primary-button-text": settings.primaryButtonTextColor,
+    "--preview-outline-button-text": settings.outlineButtonTextColor,
+    "--preview-quiet-button-text": settings.quietButtonTextColor,
+    "--preview-staff-card-text": settings.staffCardTextColor,
+    "--preview-message": settings.messageColor,
+  };
+
+  return (
+    <div className="design-preview" style={style}>
+      <div className="design-preview-screen">
+        <p className="preview-eyebrow">Reception</p>
+        <h2>{settings.brandName || "受付"}</h2>
+        <p className="preview-device">原宿校 / 受付iPad 1</p>
+        <div className="preview-card">
+          <div className="preview-button-grid">
+            <button className="preview-choice main" type="button">
+              担当講師の名前を検索する
+            </button>
+            <button className="preview-choice outline" type="button">
+              体験レッスンはこちら
+            </button>
+            <button className="preview-choice quiet" type="button">
+              レッスン室レンタルの生徒さんはこちら
+            </button>
+          </div>
+          <label className="preview-field">
+            <span>来訪者の名前</span>
+            <div>例：山田 太郎</div>
+          </label>
+          <div className="preview-staff-card">A先生</div>
+          <p className="preview-message">担当者へSlack通知を送信しました。</p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ColorField({ label, value, onChange }) {

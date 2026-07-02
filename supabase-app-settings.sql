@@ -6,11 +6,27 @@ create table if not exists public.app_settings (
   surface_color text not null default '#ffffff',
   text_color text not null default '#1f2428',
   label_color text not null default '#667074',
+  title_color text not null default '#1f2428',
+  device_label_color text not null default '#667074',
+  input_label_color text not null default '#667074',
   accent_color text not null default '#16635b',
+  primary_button_text_color text not null default '#ffffff',
+  outline_button_text_color text not null default '#0f4842',
+  quiet_button_text_color text not null default '#1f2428',
+  staff_card_text_color text not null default '#1f2428',
+  message_color text not null default '#0f4842',
   updated_at timestamptz not null default now()
 );
 
 alter table public.app_settings add column if not exists label_color text not null default '#667074';
+alter table public.app_settings add column if not exists title_color text not null default '#1f2428';
+alter table public.app_settings add column if not exists device_label_color text not null default '#667074';
+alter table public.app_settings add column if not exists input_label_color text not null default '#667074';
+alter table public.app_settings add column if not exists primary_button_text_color text not null default '#ffffff';
+alter table public.app_settings add column if not exists outline_button_text_color text not null default '#0f4842';
+alter table public.app_settings add column if not exists quiet_button_text_color text not null default '#1f2428';
+alter table public.app_settings add column if not exists staff_card_text_color text not null default '#1f2428';
+alter table public.app_settings add column if not exists message_color text not null default '#0f4842';
 
 insert into public.app_settings (
   id,
@@ -20,7 +36,15 @@ insert into public.app_settings (
   surface_color,
   text_color,
   label_color,
-  accent_color
+  title_color,
+  device_label_color,
+  input_label_color,
+  accent_color,
+  primary_button_text_color,
+  outline_button_text_color,
+  quiet_button_text_color,
+  staff_card_text_color,
+  message_color
 ) values (
   'default',
   '受付',
@@ -29,7 +53,15 @@ insert into public.app_settings (
   '#ffffff',
   '#1f2428',
   '#667074',
-  '#16635b'
+  '#1f2428',
+  '#667074',
+  '#667074',
+  '#16635b',
+  '#ffffff',
+  '#0f4842',
+  '#1f2428',
+  '#1f2428',
+  '#0f4842'
 ) on conflict (id) do nothing;
 
 alter table public.app_settings enable row level security;

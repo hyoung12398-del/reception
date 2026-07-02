@@ -190,8 +190,16 @@ export default function ReceptionPage() {
     "--surface": settings.surfaceColor,
     "--text": settings.textColor,
     "--muted": settings.labelColor,
+    "--title": settings.titleColor,
+    "--device-label": settings.deviceLabelColor,
+    "--input-label": settings.inputLabelColor,
     "--accent": settings.accentColor,
     "--accent-strong": settings.accentColor,
+    "--primary-button-text": settings.primaryButtonTextColor,
+    "--outline-button-text": settings.outlineButtonTextColor,
+    "--quiet-button-text": settings.quietButtonTextColor,
+    "--staff-card-text": settings.staffCardTextColor,
+    "--message": settings.messageColor,
   };
 
   return (
@@ -361,5 +369,13 @@ const defaultSettings = {
   surfaceColor: "#ffffff",
   textColor: "#1f2428",
   labelColor: "#667074",
+  titleColor: "#1f2428",
+  deviceLabelColor: "#667074",
+  inputLabelColor: "#667074",
   accentColor: "#16635b",
+  primaryButtonTextColor: "#ffffff",
+  outlineButtonTextColor: "#0f4842",
+  quietButtonTextColor: "#1f2428",
+  staffCardTextColor: "#1f2428",
+  messageColor: "#0f4842",
 };
