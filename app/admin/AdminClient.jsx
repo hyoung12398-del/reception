@@ -152,6 +152,11 @@ export default function AdminClient() {
                 onChange={(value) => setSettingsForm({ ...settingsForm, surfaceColor: value })}
               />
               <ColorField
+                label="カード枠線色"
+                value={settingsForm.surfaceBorderColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, surfaceBorderColor: value })}
+              />
+              <ColorField
                 label="メイン色"
                 value={settingsForm.accentColor}
                 onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
@@ -577,6 +582,7 @@ function emptySettingsForm() {
     logoUrl: "",
     backgroundColor: "#f6f4ef",
     surfaceColor: "#ffffff",
+    surfaceBorderColor: "#d9ded9",
     textColor: "#1f2428",
     labelColor: "#667074",
     titleColor: "#1f2428",
@@ -636,6 +642,7 @@ function DesignPreview({ settings }) {
   const style = {
     "--preview-bg": settings.backgroundColor,
     "--preview-surface": settings.surfaceColor,
+    "--preview-surface-border": settings.surfaceBorderColor,
     "--preview-text": settings.textColor,
     "--preview-label": settings.labelColor,
     "--preview-title": settings.titleColor,

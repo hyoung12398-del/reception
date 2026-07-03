@@ -30,6 +30,7 @@ function formatSettingsSaveError(error) {
     "title_color",
     "device_label_color",
     "input_label_color",
+    "surface_border_color",
     "primary_button_text_color",
     "outline_button_text_color",
     "quiet_button_text_color",

@@ -4,6 +4,7 @@ create table if not exists public.app_settings (
   logo_url text,
   background_color text not null default '#f6f4ef',
   surface_color text not null default '#ffffff',
+  surface_border_color text not null default '#d9ded9',
   text_color text not null default '#1f2428',
   label_color text not null default '#667074',
   title_color text not null default '#1f2428',
@@ -28,6 +29,7 @@ create table if not exists public.app_settings (
 );
 
 alter table public.app_settings add column if not exists label_color text not null default '#667074';
+alter table public.app_settings add column if not exists surface_border_color text not null default '#d9ded9';
 alter table public.app_settings add column if not exists title_color text not null default '#1f2428';
 alter table public.app_settings add column if not exists device_label_color text not null default '#667074';
 alter table public.app_settings add column if not exists input_label_color text not null default '#667074';
@@ -52,6 +54,7 @@ insert into public.app_settings (
   logo_url,
   background_color,
   surface_color,
+  surface_border_color,
   text_color,
   label_color,
   title_color,
@@ -78,6 +81,7 @@ insert into public.app_settings (
   null,
   '#f6f4ef',
   '#ffffff',
+  '#d9ded9',
   '#1f2428',
   '#667074',
   '#1f2428',

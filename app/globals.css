@@ -2,6 +2,7 @@
   color-scheme: light;
   --bg: #f6f4ef;
   --surface: #ffffff;
+  --surface-border: #d9ded9;
   --text: #1f2428;
   --muted: #667074;
   --title: #1f2428;
@@ -143,7 +144,7 @@ h1 {
 
 .panel {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--surface-border);
   border-radius: 8px;
   padding: 24px;
 }
@@ -532,7 +533,7 @@ input {
 
 .preview-card {
   background: var(--preview-surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--preview-surface-border);
   border-radius: 8px;
   padding: 16px;
 }

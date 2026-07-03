@@ -206,6 +206,7 @@ export default function ReceptionPage() {
   const themeStyle = {
     "--bg": settings.backgroundColor,
     "--surface": settings.surfaceColor,
+    "--surface-border": settings.surfaceBorderColor,
     "--text": settings.textColor,
     "--muted": settings.labelColor,
     "--title": settings.titleColor,
@@ -409,6 +410,7 @@ const defaultSettings = {
   logoUrl: "",
   backgroundColor: "#f6f4ef",
   surfaceColor: "#ffffff",
+  surfaceBorderColor: "#d9ded9",
   textColor: "#1f2428",
   labelColor: "#667074",
   titleColor: "#1f2428",
