@@ -165,6 +165,7 @@ export default function ReceptionPage() {
 
     resetForm();
     setMessage("レッスン室レンタルを記録しました。");
+    showCompletionNotice();
   }
 
   function resetForm() {

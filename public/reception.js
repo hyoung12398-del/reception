@@ -244,6 +244,7 @@ async function saveRoomRental() {
   }
 
   returnToMenuWithMessage("レッスン室レンタルを記録しました。");
+  showCompletionNotice();
 }
 
 function updateButton() {
