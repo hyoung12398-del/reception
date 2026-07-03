@@ -119,94 +119,139 @@ export default function AdminClient() {
       <section className="panel admin-section">
         <div className="section-title">デザイン設定</div>
         <form className="staff-form" onSubmit={saveSettings}>
-          <label className="field">
-            <span>受付画面タイトル</span>
-            <input
-              autoComplete="off"
-              onChange={(event) => setSettingsForm({ ...settingsForm, brandName: event.target.value })}
-              placeholder="例：DECO MUSIC 受付"
-              type="text"
-              value={settingsForm.brandName}
+          <SettingsGroup title="基本設定" defaultOpen>
+            <label className="field">
+              <span>受付画面タイトル</span>
+              <input
+                autoComplete="off"
+                onChange={(event) => setSettingsForm({ ...settingsForm, brandName: event.target.value })}
+                placeholder="例：DECO MUSIC 受付"
+                type="text"
+                value={settingsForm.brandName}
+              />
+            </label>
+            <label className="field">
+              <span>ロゴ画像URL</span>
+              <input
+                autoComplete="off"
+                onChange={(event) => setSettingsForm({ ...settingsForm, logoUrl: event.target.value })}
+                placeholder="https://..."
+                type="url"
+                value={settingsForm.logoUrl}
+              />
+            </label>
+            <div className="color-grid">
+              <ColorField
+                label="背景色"
+                value={settingsForm.backgroundColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, backgroundColor: value })}
+              />
+              <ColorField
+                label="カード色"
+                value={settingsForm.surfaceColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, surfaceColor: value })}
+              />
+              <ColorField
+                label="メイン色"
+                value={settingsForm.accentColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
+              />
+            </div>
+          </SettingsGroup>
+
+          <SettingsGroup title="文字色">
+            <div className="color-grid">
+              <ColorField
+                label="文字色"
+                value={settingsForm.textColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, textColor: value })}
+              />
+              <ColorField
+                label="ラベル色"
+                value={settingsForm.labelColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, labelColor: value })}
+              />
+              <ColorField
+                label="タイトル色"
+                value={settingsForm.titleColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, titleColor: value })}
+              />
+              <ColorField
+                label="端末表示の色"
+                value={settingsForm.deviceLabelColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, deviceLabelColor: value })}
+              />
+              <ColorField
+                label="入力ラベルの色"
+                value={settingsForm.inputLabelColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, inputLabelColor: value })}
+              />
+              <ColorField
+                label="先生カード文字色"
+                value={settingsForm.staffCardTextColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, staffCardTextColor: value })}
+              />
+              <ColorField
+                label="メッセージ色"
+                value={settingsForm.messageColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, messageColor: value })}
+              />
+            </div>
+          </SettingsGroup>
+
+          <SettingsGroup title="入口ボタンの色">
+            <ButtonColorGroup
+              title="担当講師の名前を検索する"
+              backgroundValue={settingsForm.staffButtonBackgroundColor}
+              textValue={settingsForm.staffButtonTextColor}
+              borderValue={settingsForm.staffButtonBorderColor}
+              onBackgroundChange={(value) => setSettingsForm({ ...settingsForm, staffButtonBackgroundColor: value })}
+              onTextChange={(value) => setSettingsForm({ ...settingsForm, staffButtonTextColor: value })}
+              onBorderChange={(value) => setSettingsForm({ ...settingsForm, staffButtonBorderColor: value })}
             />
-          </label>
-          <label className="field">
-            <span>ロゴ画像URL</span>
-            <input
-              autoComplete="off"
-              onChange={(event) => setSettingsForm({ ...settingsForm, logoUrl: event.target.value })}
-              placeholder="https://..."
-              type="url"
-              value={settingsForm.logoUrl}
+            <ButtonColorGroup
+              title="体験レッスンはこちら"
+              backgroundValue={settingsForm.trialButtonBackgroundColor}
+              textValue={settingsForm.trialButtonTextColor}
+              borderValue={settingsForm.trialButtonBorderColor}
+              onBackgroundChange={(value) => setSettingsForm({ ...settingsForm, trialButtonBackgroundColor: value })}
+              onTextChange={(value) => setSettingsForm({ ...settingsForm, trialButtonTextColor: value })}
+              onBorderChange={(value) => setSettingsForm({ ...settingsForm, trialButtonBorderColor: value })}
             />
-          </label>
-          <div className="color-grid">
-            <ColorField
-              label="背景色"
-              value={settingsForm.backgroundColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, backgroundColor: value })}
+            <ButtonColorGroup
+              title="レッスン室レンタルの生徒さんはこちら"
+              backgroundValue={settingsForm.rentalButtonBackgroundColor}
+              textValue={settingsForm.rentalButtonTextColor}
+              borderValue={settingsForm.rentalButtonBorderColor}
+              onBackgroundChange={(value) => setSettingsForm({ ...settingsForm, rentalButtonBackgroundColor: value })}
+              onTextChange={(value) => setSettingsForm({ ...settingsForm, rentalButtonTextColor: value })}
+              onBorderChange={(value) => setSettingsForm({ ...settingsForm, rentalButtonBorderColor: value })}
             />
-            <ColorField
-              label="カード色"
-              value={settingsForm.surfaceColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, surfaceColor: value })}
-            />
-            <ColorField
-              label="文字色"
-              value={settingsForm.textColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, textColor: value })}
-            />
-            <ColorField
-              label="ラベル色"
-              value={settingsForm.labelColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, labelColor: value })}
-            />
-            <ColorField
-              label="タイトル色"
-              value={settingsForm.titleColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, titleColor: value })}
-            />
-            <ColorField
-              label="端末表示の色"
-              value={settingsForm.deviceLabelColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, deviceLabelColor: value })}
-            />
-            <ColorField
-              label="入力ラベルの色"
-              value={settingsForm.inputLabelColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, inputLabelColor: value })}
-            />
-            <ColorField
-              label="メイン色"
-              value={settingsForm.accentColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, accentColor: value })}
-            />
-            <ColorField
-              label="メインボタン文字色"
-              value={settingsForm.primaryButtonTextColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, primaryButtonTextColor: value })}
-            />
-            <ColorField
-              label="白ボタン文字色"
-              value={settingsForm.outlineButtonTextColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, outlineButtonTextColor: value })}
-            />
-            <ColorField
-              label="薄いボタン文字色"
-              value={settingsForm.quietButtonTextColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, quietButtonTextColor: value })}
-            />
-            <ColorField
-              label="先生カード文字色"
-              value={settingsForm.staffCardTextColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, staffCardTextColor: value })}
-            />
-            <ColorField
-              label="メッセージ色"
-              value={settingsForm.messageColor}
-              onChange={(value) => setSettingsForm({ ...settingsForm, messageColor: value })}
-            />
-          </div>
-          <DesignPreview settings={settingsForm} />
+          </SettingsGroup>
+
+          <SettingsGroup title="その他のボタン色">
+            <div className="color-grid">
+              <ColorField
+                label="メインボタン文字色"
+                value={settingsForm.primaryButtonTextColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, primaryButtonTextColor: value })}
+              />
+              <ColorField
+                label="白ボタン文字色"
+                value={settingsForm.outlineButtonTextColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, outlineButtonTextColor: value })}
+              />
+              <ColorField
+                label="薄いボタン文字色"
+                value={settingsForm.quietButtonTextColor}
+                onChange={(value) => setSettingsForm({ ...settingsForm, quietButtonTextColor: value })}
+              />
+            </div>
+          </SettingsGroup>
+
+          <SettingsGroup title="プレビュー" defaultOpen>
+            <DesignPreview settings={settingsForm} />
+          </SettingsGroup>
           <button className="primary" type="submit">
             保存
           </button>
@@ -541,9 +586,50 @@ function emptySettingsForm() {
     primaryButtonTextColor: "#ffffff",
     outlineButtonTextColor: "#0f4842",
     quietButtonTextColor: "#1f2428",
+    staffButtonBackgroundColor: "#16635b",
+    staffButtonTextColor: "#ffffff",
+    staffButtonBorderColor: "#16635b",
+    trialButtonBackgroundColor: "#ffffff",
+    trialButtonTextColor: "#0f4842",
+    trialButtonBorderColor: "#16635b",
+    rentalButtonBackgroundColor: "#eef0ee",
+    rentalButtonTextColor: "#1f2428",
+    rentalButtonBorderColor: "#d9ded9",
     staffCardTextColor: "#1f2428",
     messageColor: "#0f4842",
   };
+}
+
+function SettingsGroup({ children, defaultOpen = false, title }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <details className="settings-group" onToggle={(event) => setIsOpen(event.currentTarget.open)} open={isOpen}>
+      <summary>{title}</summary>
+      <div className="settings-group-body">{children}</div>
+    </details>
+  );
+}
+
+function ButtonColorGroup({
+  backgroundValue,
+  borderValue,
+  onBackgroundChange,
+  onBorderChange,
+  onTextChange,
+  textValue,
+  title,
+}) {
+  return (
+    <div className="button-color-group">
+      <div className="section-subtitle">{title}</div>
+      <div className="color-grid">
+        <ColorField label="背景色" value={backgroundValue} onChange={onBackgroundChange} />
+        <ColorField label="文字色" value={textValue} onChange={onTextChange} />
+        <ColorField label="枠線色" value={borderValue} onChange={onBorderChange} />
+      </div>
+    </div>
+  );
 }
 
 function DesignPreview({ settings }) {
@@ -559,6 +645,15 @@ function DesignPreview({ settings }) {
     "--preview-primary-button-text": settings.primaryButtonTextColor,
     "--preview-outline-button-text": settings.outlineButtonTextColor,
     "--preview-quiet-button-text": settings.quietButtonTextColor,
+    "--preview-staff-button-bg": settings.staffButtonBackgroundColor,
+    "--preview-staff-button-text": settings.staffButtonTextColor,
+    "--preview-staff-button-border": settings.staffButtonBorderColor,
+    "--preview-trial-button-bg": settings.trialButtonBackgroundColor,
+    "--preview-trial-button-text": settings.trialButtonTextColor,
+    "--preview-trial-button-border": settings.trialButtonBorderColor,
+    "--preview-rental-button-bg": settings.rentalButtonBackgroundColor,
+    "--preview-rental-button-text": settings.rentalButtonTextColor,
+    "--preview-rental-button-border": settings.rentalButtonBorderColor,
     "--preview-staff-card-text": settings.staffCardTextColor,
     "--preview-message": settings.messageColor,
   };
