@@ -13,6 +13,7 @@ export default function ReceptionPage() {
   const [staffSearch, setStaffSearch] = useState("");
   const [mode, setMode] = useState("");
   const [message, setMessage] = useState("");
+  const [completionNotice, setCompletionNotice] = useState(null);
   const [sending, setSending] = useState(false);
   const [settings, setSettings] = useState(defaultSettings);
 
@@ -39,6 +40,16 @@ export default function ReceptionPage() {
 
     setFilteredStaff(nextFilteredStaff);
   }, [staffSearch, staffList, selectedStaffId]);
+
+  useEffect(() => {
+    if (!completionNotice) return undefined;
+
+    const timer = setTimeout(() => {
+      setCompletionNotice(null);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [completionNotice]);
 
   async function loadDevice(key) {
     if (!key) {
@@ -102,6 +113,7 @@ export default function ReceptionPage() {
 
     resetForm();
     setMessage("担当者へSlack通知を送信しました。");
+    showCompletionNotice();
   }
 
   async function sendTrialLesson() {
@@ -127,6 +139,7 @@ export default function ReceptionPage() {
 
     resetForm();
     setMessage("体験レッスン受付をSlack通知しました。");
+    showCompletionNotice();
   }
 
   async function saveRoomRental() {
@@ -178,6 +191,10 @@ export default function ReceptionPage() {
     setStaffSearch("");
     setFilteredStaff([]);
     setMessage("");
+  }
+
+  function showCompletionNotice() {
+    setCompletionNotice({ id: Date.now() });
   }
 
   const hasQuery = Boolean(normalizeText(staffSearch));
@@ -301,6 +318,17 @@ export default function ReceptionPage() {
           </p>
         </section>
       </main>
+      {completionNotice ? (
+        <div className="completion-overlay" role="status" aria-live="polite">
+          <div className="completion-dialog">
+            <p>受付は完了しました。</p>
+            <p>待合室にてお待ちください。</p>
+            <button className="completion-close" onClick={() => setCompletionNotice(null)} type="button">
+              閉じる
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

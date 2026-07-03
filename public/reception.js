@@ -3,6 +3,7 @@ let staffList = [];
 let deviceKey = "";
 let currentDevice = null;
 let mode = "";
+let completionTimer = null;
 
 const choiceGrid = document.querySelector("#choiceGrid");
 const formArea = document.querySelector("#formArea");
@@ -20,6 +21,8 @@ const trialButton = document.querySelector("#trialButton");
 const rentalButton = document.querySelector("#rentalButton");
 const message = document.querySelector("#message");
 const deviceLabel = document.querySelector("#deviceLabel");
+const completionOverlay = document.querySelector("#completionOverlay");
+const completionClose = document.querySelector("#completionClose");
 
 main();
 
@@ -43,6 +46,7 @@ async function main() {
   sendButton.addEventListener("click", sendCheckIn);
   trialButton.addEventListener("click", sendTrialLesson);
   rentalButton.addEventListener("click", saveRoomRental);
+  completionClose.addEventListener("click", hideCompletionNotice);
   updateModeView();
 }
 
@@ -181,6 +185,7 @@ async function sendCheckIn() {
   }
 
   returnToMenuWithMessage("担当者へSlack通知を送信しました。");
+  showCompletionNotice();
 }
 
 async function sendTrialLesson() {
@@ -209,6 +214,7 @@ async function sendTrialLesson() {
   }
 
   returnToMenuWithMessage("体験レッスン受付をSlack通知しました。");
+  showCompletionNotice();
 }
 
 async function saveRoomRental() {
@@ -244,6 +250,18 @@ function updateButton() {
   sendButton.disabled = mode !== "staff" || !currentDevice || !visitorName.value.trim() || !selectedStaffId;
   trialButton.disabled = mode !== "trial" || !currentDevice || !visitorName.value.trim();
   rentalButton.disabled = mode !== "rental" || !currentDevice || !visitorName.value.trim();
+}
+
+function showCompletionNotice() {
+  completionOverlay.classList.remove("hidden");
+  clearTimeout(completionTimer);
+  completionTimer = setTimeout(hideCompletionNotice, 5000);
+}
+
+function hideCompletionNotice() {
+  completionOverlay.classList.add("hidden");
+  clearTimeout(completionTimer);
+  completionTimer = null;
 }
 
 function escapeHtml(value) {
