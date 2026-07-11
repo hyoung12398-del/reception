@@ -424,6 +424,14 @@ export default function AdminClient() {
             />
             <span>この端末を有効にする</span>
           </label>
+          <label className="toggle-row">
+            <input
+              checked={deviceForm.showRoomRental}
+              onChange={(event) => setDeviceForm({ ...deviceForm, showRoomRental: event.target.checked })}
+              type="checkbox"
+            />
+            <span>レッスン室レンタルボタンを表示する</span>
+          </label>
           <div className="section-subtitle">この端末の体験レッスン通知先</div>
           <div className="check-list">
             {staffItems.length ? (
@@ -471,6 +479,7 @@ export default function AdminClient() {
                     <p>{item.deviceKey}</p>
                     <p>{item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
                     <p>{item.supportPhoneNumber ? `問い合わせ電話 ${item.supportPhoneNumber}` : "問い合わせ電話 未設定"}</p>
+                    <p>{item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
@@ -489,6 +498,7 @@ export default function AdminClient() {
                           logoUrl: item.logoUrl || "",
                           supportPhoneNumber: item.supportPhoneNumber || "",
                           trialLessonStaffIds: item.trialLessonStaffIds || [],
+                          showRoomRental: item.showRoomRental !== false,
                         });
                         setDeviceMessage(`${item.schoolName} / ${item.deviceName} を編集中です。`);
                       }}
@@ -562,6 +572,7 @@ function emptyDeviceForm() {
     logoUrl: "",
     supportPhoneNumber: "",
     trialLessonStaffIds: [],
+    showRoomRental: true,
     enabled: true,
   };
 }

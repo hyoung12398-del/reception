@@ -17,6 +17,10 @@ export async function POST(request) {
     return json({ error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
   }
 
+  if (device.showRoomRental === false) {
+    return json({ error: "この端末ではレッスン室レンタル受付は利用できません。" }, 400);
+  }
+
   const visit = {
     id: crypto.randomUUID(),
     visitorName,

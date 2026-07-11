@@ -107,6 +107,8 @@ function updateModeView() {
   sendButton.classList.toggle("hidden", mode !== "staff");
   trialButton.classList.toggle("hidden", mode !== "trial");
   rentalButton.classList.toggle("hidden", mode !== "rental");
+  chooseRental.classList.toggle("hidden", currentDevice?.showRoomRental === false);
+  choiceGrid.classList.toggle("two-choice", currentDevice?.showRoomRental === false);
 
   for (const button of [chooseStaff, chooseTrial, chooseRental]) {
     button.disabled = !currentDevice;

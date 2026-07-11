@@ -202,6 +202,7 @@ export default function ReceptionPage() {
   const sendDisabled = sending || !currentDevice || !visitorName.trim() || !selectedStaffId;
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
   const rentalDisabled = sending || !currentDevice || !visitorName.trim();
+  const showRoomRental = currentDevice?.showRoomRental !== false;
   const logoUrl = currentDevice?.logoUrl || settings.logoUrl;
   const themeStyle = {
     "--bg": settings.backgroundColor,
@@ -244,16 +245,18 @@ export default function ReceptionPage() {
 
         <section className="panel">
           {!mode ? (
-            <div className="choice-grid">
+            <div className={`choice-grid ${showRoomRental ? "" : "two-choice"}`}>
               <button className="choice-button" disabled={!currentDevice} onClick={() => chooseMode("staff")} type="button">
                 担当講師の名前を検索する
               </button>
               <button className="choice-button accent-outline" disabled={!currentDevice} onClick={() => chooseMode("trial")} type="button">
                 体験レッスンはこちら
               </button>
-              <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("rental")} type="button">
-                レッスン室レンタルの生徒さんはこちら
-              </button>
+              {showRoomRental ? (
+                <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("rental")} type="button">
+                  レッスン室レンタルの生徒さんはこちら
+                </button>
+              ) : null}
             </div>
           ) : (
             <>

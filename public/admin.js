@@ -21,6 +21,7 @@ const deviceKey = document.querySelector("#deviceKey");
 const deviceLogoUrl = document.querySelector("#deviceLogoUrl");
 const deviceSupportPhoneNumber = document.querySelector("#deviceSupportPhoneNumber");
 const deviceEnabled = document.querySelector("#deviceEnabled");
+const deviceShowRoomRental = document.querySelector("#deviceShowRoomRental");
 const deviceMessage = document.querySelector("#deviceMessage");
 const resetDeviceForm = document.querySelector("#resetDeviceForm");
 const logoutButton = document.querySelector("#logoutButton");
@@ -100,6 +101,7 @@ function renderDevice(item) {
         <p>${escapeHtml(item.deviceKey)}</p>
         <p>${item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
         <p>${item.supportPhoneNumber ? `問い合わせ電話 ${escapeHtml(item.supportPhoneNumber)}` : "問い合わせ電話 未設定"}</p>
+        <p>${item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
         <p><a class="text-link compact" href="${url}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a></p>
       </div>
       <div class="row-actions">
@@ -128,6 +130,7 @@ function editDevice(item) {
   deviceLogoUrl.value = item.logoUrl || "";
   deviceSupportPhoneNumber.value = item.supportPhoneNumber || "";
   deviceEnabled.checked = item.enabled;
+  deviceShowRoomRental.checked = item.showRoomRental !== false;
   deviceMessage.textContent = `${item.schoolName} / ${item.deviceName} を編集中です。`;
 }
 
@@ -170,6 +173,7 @@ async function saveDevice(event) {
       deviceKey: deviceKey.value,
       logoUrl: deviceLogoUrl.value,
       supportPhoneNumber: deviceSupportPhoneNumber.value,
+      showRoomRental: deviceShowRoomRental.checked,
       enabled: deviceEnabled.checked,
     });
 
@@ -249,6 +253,7 @@ function clearDeviceForm() {
   deviceLogoUrl.value = "";
   deviceSupportPhoneNumber.value = "";
   deviceEnabled.checked = true;
+  deviceShowRoomRental.checked = true;
   deviceMessage.textContent = "";
 }
 

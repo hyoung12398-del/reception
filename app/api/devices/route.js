@@ -21,6 +21,7 @@ export async function POST(request) {
   const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
     ? body.trialLessonStaffIds.map(String).filter(Boolean)
     : [];
+  const showRoomRental = body.showRoomRental !== false;
   const enabled = Boolean(body.enabled);
 
   if (!deviceKey || !schoolName || !deviceName) {
@@ -45,6 +46,7 @@ export async function POST(request) {
     logoUrl,
     supportPhoneNumber,
     trialLessonStaffIds,
+    showRoomRental,
     enabled,
   };
 
