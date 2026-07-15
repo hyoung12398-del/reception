@@ -351,6 +351,8 @@ async function handleSaveDevice(req, res) {
   const showRoomRental = body.showRoomRental !== false;
   const showGroupLesson = body.showGroupLesson === true;
   const groupLessonButtonLabel = String(body.groupLessonButtonLabel || "").trim();
+  const deviceThemeEnabled = body.deviceThemeEnabled === true;
+  const themeOverrides = body.themeOverrides && typeof body.themeOverrides === "object" ? body.themeOverrides : {};
   const enabled = Boolean(body.enabled);
 
   if (!deviceKey || !schoolName || !deviceName) {
@@ -379,6 +381,8 @@ async function handleSaveDevice(req, res) {
     showRoomRental,
     showGroupLesson,
     groupLessonButtonLabel,
+    deviceThemeEnabled,
+    themeOverrides,
     enabled,
   };
 
@@ -631,6 +635,8 @@ function fromDeviceRow(row) {
     showRoomRental: row.show_room_rental !== false,
     showGroupLesson: row.show_group_lesson === true,
     groupLessonButtonLabel: row.group_lesson_button_label || "グループレッスン受付はこちら",
+    deviceThemeEnabled: row.device_theme_enabled === true,
+    themeOverrides: row.theme_overrides || {},
     enabled: row.enabled,
   };
 }
@@ -648,6 +654,8 @@ function toDeviceRow(device) {
     show_room_rental: device.showRoomRental !== false,
     show_group_lesson: device.showGroupLesson === true,
     group_lesson_button_label: device.groupLessonButtonLabel || null,
+    device_theme_enabled: device.deviceThemeEnabled === true,
+    theme_overrides: device.themeOverrides || {},
     enabled: device.enabled,
   };
 }

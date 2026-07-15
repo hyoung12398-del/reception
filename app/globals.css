@@ -450,6 +450,12 @@ input {
   grid-template-columns: 1fr auto;
 }
 
+.compact-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
 .settings-group {
   border: 1px solid var(--line);
   border-radius: 8px;

@@ -23,6 +23,8 @@ create table if not exists public.devices (
   show_room_rental boolean not null default true,
   show_group_lesson boolean not null default false,
   group_lesson_button_label text,
+  device_theme_enabled boolean not null default false,
+  theme_overrides jsonb not null default '{}'::jsonb,
   enabled boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -35,6 +37,8 @@ alter table public.devices add column if not exists show_room_rental boolean not
 alter table public.devices add column if not exists staff_button_label text;
 alter table public.devices add column if not exists show_group_lesson boolean not null default false;
 alter table public.devices add column if not exists group_lesson_button_label text;
+alter table public.devices add column if not exists device_theme_enabled boolean not null default false;
+alter table public.devices add column if not exists theme_overrides jsonb not null default '{}'::jsonb;
 
 create table if not exists public.visits (
   id text primary key,

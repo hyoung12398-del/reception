@@ -235,32 +235,36 @@ export default function ReceptionPage() {
   const groupLessonButtonLabel = currentDevice?.groupLessonButtonLabel || "グループレッスン受付はこちら";
   const choiceCount = 2 + (showRoomRental ? 1 : 0) + (showGroupLesson ? 1 : 0);
   const choiceGridClass = `choice-grid ${choiceCount === 2 ? "two-choice" : ""} ${choiceCount >= 4 ? "four-choice" : ""}`;
-  const logoUrl = currentDevice?.logoUrl || settings.logoUrl;
+  const activeSettings =
+    currentDevice?.deviceThemeEnabled && currentDevice?.themeOverrides
+      ? { ...settings, ...currentDevice.themeOverrides }
+      : settings;
+  const logoUrl = currentDevice?.logoUrl || activeSettings.logoUrl;
   const themeStyle = {
-    "--bg": settings.backgroundColor,
-    "--surface": settings.surfaceColor,
-    "--surface-border": settings.surfaceBorderColor,
-    "--text": settings.textColor,
-    "--muted": settings.labelColor,
-    "--title": settings.titleColor,
-    "--device-label": settings.deviceLabelColor,
-    "--input-label": settings.inputLabelColor,
-    "--accent": settings.accentColor,
-    "--accent-strong": settings.accentColor,
-    "--primary-button-text": settings.primaryButtonTextColor,
-    "--outline-button-text": settings.outlineButtonTextColor,
-    "--quiet-button-text": settings.quietButtonTextColor,
-    "--staff-button-bg": settings.staffButtonBackgroundColor,
-    "--staff-button-text": settings.staffButtonTextColor,
-    "--staff-button-border": settings.staffButtonBorderColor,
-    "--trial-button-bg": settings.trialButtonBackgroundColor,
-    "--trial-button-text": settings.trialButtonTextColor,
-    "--trial-button-border": settings.trialButtonBorderColor,
-    "--rental-button-bg": settings.rentalButtonBackgroundColor,
-    "--rental-button-text": settings.rentalButtonTextColor,
-    "--rental-button-border": settings.rentalButtonBorderColor,
-    "--staff-card-text": settings.staffCardTextColor,
-    "--message": settings.messageColor,
+    "--bg": activeSettings.backgroundColor,
+    "--surface": activeSettings.surfaceColor,
+    "--surface-border": activeSettings.surfaceBorderColor,
+    "--text": activeSettings.textColor,
+    "--muted": activeSettings.labelColor,
+    "--title": activeSettings.titleColor,
+    "--device-label": activeSettings.deviceLabelColor,
+    "--input-label": activeSettings.inputLabelColor,
+    "--accent": activeSettings.accentColor,
+    "--accent-strong": activeSettings.accentColor,
+    "--primary-button-text": activeSettings.primaryButtonTextColor,
+    "--outline-button-text": activeSettings.outlineButtonTextColor,
+    "--quiet-button-text": activeSettings.quietButtonTextColor,
+    "--staff-button-bg": activeSettings.staffButtonBackgroundColor,
+    "--staff-button-text": activeSettings.staffButtonTextColor,
+    "--staff-button-border": activeSettings.staffButtonBorderColor,
+    "--trial-button-bg": activeSettings.trialButtonBackgroundColor,
+    "--trial-button-text": activeSettings.trialButtonTextColor,
+    "--trial-button-border": activeSettings.trialButtonBorderColor,
+    "--rental-button-bg": activeSettings.rentalButtonBackgroundColor,
+    "--rental-button-text": activeSettings.rentalButtonTextColor,
+    "--rental-button-border": activeSettings.rentalButtonBorderColor,
+    "--staff-card-text": activeSettings.staffCardTextColor,
+    "--message": activeSettings.messageColor,
   };
 
   return (
@@ -270,7 +274,7 @@ export default function ReceptionPage() {
           <div className="brand-block">
             {logoUrl ? <img className="brand-logo" src={logoUrl} alt="" /> : null}
             <p className="eyebrow">Reception</p>
-            <h1>{settings.brandName || "受付"}</h1>
+            <h1>{activeSettings.brandName || "受付"}</h1>
             <p className="device-label">{deviceLabel}</p>
           </div>
         </section>

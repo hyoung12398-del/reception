@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function AdminClient() {
   const [staffItems, setStaffItems] = useState([]);
@@ -13,6 +13,14 @@ export default function AdminClient() {
   const [deviceMessage, setDeviceMessage] = useState("");
   const [settingsForm, setSettingsForm] = useState(emptySettingsForm());
   const [settingsMessage, setSettingsMessage] = useState("");
+  const [staffListQuery, setStaffListQuery] = useState("");
+  const [trialRecipientQuery, setTrialRecipientQuery] = useState("");
+
+  const filteredStaffItems = useMemo(() => filterStaffByQuery(staffItems, staffListQuery), [staffItems, staffListQuery]);
+  const visibleTrialRecipientStaff = useMemo(
+    () => trialRecipientChoices(staffItems, trialRecipientQuery, deviceForm.trialLessonStaffIds),
+    [staffItems, trialRecipientQuery, deviceForm.trialLessonStaffIds],
+  );
 
   useEffect(() => {
     loadAll();
@@ -97,6 +105,16 @@ export default function AdminClient() {
   async function logout() {
     await fetch("/api/logout", { method: "POST" });
     location.href = "/login";
+  }
+
+  function updateDeviceTheme(key, value) {
+    setDeviceForm({
+      ...deviceForm,
+      themeOverrides: {
+        ...deviceForm.themeOverrides,
+        [key]: value,
+      },
+    });
   }
 
   return (
@@ -329,9 +347,19 @@ export default function AdminClient() {
             {staffMessage}
           </p>
         </form>
+        <label className="field search-field">
+          <span>先生を検索</span>
+          <input
+            autoComplete="off"
+            onChange={(event) => setStaffListQuery(event.target.value)}
+            placeholder="名前・カタカナ・ひらがなで検索"
+            type="search"
+            value={staffListQuery}
+          />
+        </label>
         <div className="admin-list">
-          {staffItems.length ? (
-            staffItems.map((item) => (
+          {staffListQuery.trim() && filteredStaffItems.length ? (
+            filteredStaffItems.map((item) => (
               <article className="admin-row" key={item.id}>
                 <div className="staff-admin-info">
                   <Avatar item={item} className="admin-avatar" />
@@ -357,6 +385,10 @@ export default function AdminClient() {
                 </div>
               </article>
             ))
+          ) : staffListQuery.trim() ? (
+            <p className="empty">該当する先生が見つかりません。</p>
+          ) : staffItems.length ? (
+            <p className="empty">名前を入力すると先生が表示されます。</p>
           ) : (
             <p className="empty">担当者はまだ登録されていません。</p>
           )}
@@ -460,10 +492,102 @@ export default function AdminClient() {
               value={deviceForm.groupLessonButtonLabel}
             />
           </label>
+          <SettingsGroup title="この端末だけのデザイン設定">
+            <label className="toggle-row">
+              <input
+                checked={deviceForm.deviceThemeEnabled}
+                onChange={(event) => {
+                  const enabled = event.target.checked;
+                  setDeviceForm({
+                    ...deviceForm,
+                    deviceThemeEnabled: enabled,
+                    themeOverrides: enabled && !Object.keys(deviceForm.themeOverrides || {}).length ? { ...settingsForm } : deviceForm.themeOverrides,
+                  });
+                }}
+                type="checkbox"
+              />
+              <span>この端末だけ別デザインにする</span>
+            </label>
+            {deviceForm.deviceThemeEnabled ? (
+              <>
+                <div className="form-actions compact-actions">
+                  <button
+                    className="secondary small"
+                    onClick={() => setDeviceForm({ ...deviceForm, themeOverrides: { ...settingsForm } })}
+                    type="button"
+                  >
+                    全体デザインをコピー
+                  </button>
+                </div>
+                <label className="field">
+                  <span>受付画面タイトル</span>
+                  <input
+                    autoComplete="off"
+                    onChange={(event) => updateDeviceTheme("brandName", event.target.value)}
+                    placeholder="例：DECO DANCE 受付"
+                    type="text"
+                    value={deviceForm.themeOverrides.brandName || ""}
+                  />
+                </label>
+                <div className="color-grid">
+                  <ColorField label="背景色" value={deviceForm.themeOverrides.backgroundColor} onChange={(value) => updateDeviceTheme("backgroundColor", value)} />
+                  <ColorField label="カード色" value={deviceForm.themeOverrides.surfaceColor} onChange={(value) => updateDeviceTheme("surfaceColor", value)} />
+                  <ColorField label="カード枠線色" value={deviceForm.themeOverrides.surfaceBorderColor} onChange={(value) => updateDeviceTheme("surfaceBorderColor", value)} />
+                  <ColorField label="文字色" value={deviceForm.themeOverrides.textColor} onChange={(value) => updateDeviceTheme("textColor", value)} />
+                  <ColorField label="ラベル色" value={deviceForm.themeOverrides.labelColor} onChange={(value) => updateDeviceTheme("labelColor", value)} />
+                  <ColorField label="タイトル色" value={deviceForm.themeOverrides.titleColor} onChange={(value) => updateDeviceTheme("titleColor", value)} />
+                  <ColorField label="端末表示の色" value={deviceForm.themeOverrides.deviceLabelColor} onChange={(value) => updateDeviceTheme("deviceLabelColor", value)} />
+                  <ColorField label="入力ラベルの色" value={deviceForm.themeOverrides.inputLabelColor} onChange={(value) => updateDeviceTheme("inputLabelColor", value)} />
+                  <ColorField label="先生カード文字色" value={deviceForm.themeOverrides.staffCardTextColor} onChange={(value) => updateDeviceTheme("staffCardTextColor", value)} />
+                  <ColorField label="メッセージ色" value={deviceForm.themeOverrides.messageColor} onChange={(value) => updateDeviceTheme("messageColor", value)} />
+                </div>
+                <ButtonColorGroup
+                  title="マンツーマン/担当講師ボタン"
+                  backgroundValue={deviceForm.themeOverrides.staffButtonBackgroundColor}
+                  textValue={deviceForm.themeOverrides.staffButtonTextColor}
+                  borderValue={deviceForm.themeOverrides.staffButtonBorderColor}
+                  onBackgroundChange={(value) => updateDeviceTheme("staffButtonBackgroundColor", value)}
+                  onTextChange={(value) => updateDeviceTheme("staffButtonTextColor", value)}
+                  onBorderChange={(value) => updateDeviceTheme("staffButtonBorderColor", value)}
+                />
+                <ButtonColorGroup
+                  title="体験レッスンボタン"
+                  backgroundValue={deviceForm.themeOverrides.trialButtonBackgroundColor}
+                  textValue={deviceForm.themeOverrides.trialButtonTextColor}
+                  borderValue={deviceForm.themeOverrides.trialButtonBorderColor}
+                  onBackgroundChange={(value) => updateDeviceTheme("trialButtonBackgroundColor", value)}
+                  onTextChange={(value) => updateDeviceTheme("trialButtonTextColor", value)}
+                  onBorderChange={(value) => updateDeviceTheme("trialButtonBorderColor", value)}
+                />
+                <ButtonColorGroup
+                  title="レンタル/グループ受付ボタン"
+                  backgroundValue={deviceForm.themeOverrides.rentalButtonBackgroundColor}
+                  textValue={deviceForm.themeOverrides.rentalButtonTextColor}
+                  borderValue={deviceForm.themeOverrides.rentalButtonBorderColor}
+                  onBackgroundChange={(value) => updateDeviceTheme("rentalButtonBackgroundColor", value)}
+                  onTextChange={(value) => updateDeviceTheme("rentalButtonTextColor", value)}
+                  onBorderChange={(value) => updateDeviceTheme("rentalButtonBorderColor", value)}
+                />
+                <DesignPreview settings={{ ...settingsForm, ...deviceForm.themeOverrides }} />
+              </>
+            ) : (
+              <p className="empty">未使用の場合、この端末は全体デザイン設定を使います。</p>
+            )}
+          </SettingsGroup>
           <div className="section-subtitle">この端末の体験レッスン通知先</div>
+          <label className="field search-field">
+            <span>通知先の先生を検索</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setTrialRecipientQuery(event.target.value)}
+              placeholder="名前・カタカナ・ひらがなで検索"
+              type="search"
+              value={trialRecipientQuery}
+            />
+          </label>
           <div className="check-list">
-            {staffItems.length ? (
-              staffItems.map((item) => (
+            {visibleTrialRecipientStaff.length ? (
+              visibleTrialRecipientStaff.map((item) => (
                 <label className="check-row" key={item.id}>
                   <input
                     checked={deviceForm.trialLessonStaffIds.includes(item.id)}
@@ -478,6 +602,10 @@ export default function AdminClient() {
                   <span>{item.name}</span>
                 </label>
               ))
+            ) : trialRecipientQuery.trim() ? (
+              <p className="empty">該当する先生が見つかりません。</p>
+            ) : staffItems.length ? (
+              <p className="empty">名前を検索すると先生が表示されます。選択済みの先生はここに残ります。</p>
             ) : (
               <p className="empty">担当者を登録すると選択できます。</p>
             )}
@@ -510,6 +638,7 @@ export default function AdminClient() {
                     <p>担当講師ボタン {item.staffButtonLabel || "担当講師の名前を検索する"}</p>
                     <p>{item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
                     <p>{item.showGroupLesson === true ? `グループ受付 表示（${item.groupLessonButtonLabel || "グループレッスン受付はこちら"}）` : "グループ受付 非表示"}</p>
+                    <p>{item.deviceThemeEnabled === true ? "端末別デザイン 使用中" : "端末別デザイン 未使用"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
@@ -532,7 +661,12 @@ export default function AdminClient() {
                           showRoomRental: item.showRoomRental !== false,
                           showGroupLesson: item.showGroupLesson === true,
                           groupLessonButtonLabel: item.groupLessonButtonLabel || "グループレッスン受付はこちら",
+                          deviceThemeEnabled: item.deviceThemeEnabled === true,
+                          themeOverrides: normalizeThemeForm(
+                            item.themeOverrides && Object.keys(item.themeOverrides).length ? item.themeOverrides : settingsForm,
+                          ),
                         });
+                        setTrialRecipientQuery("");
                         setDeviceMessage(`${item.schoolName} / ${item.deviceName} を編集中です。`);
                       }}
                       type="button"
@@ -609,6 +743,8 @@ function emptyDeviceForm() {
     showRoomRental: true,
     showGroupLesson: false,
     groupLessonButtonLabel: "グループレッスン受付はこちら",
+    deviceThemeEnabled: false,
+    themeOverrides: emptySettingsForm(),
     enabled: true,
   };
 }
@@ -743,21 +879,61 @@ function DesignPreview({ settings }) {
 }
 
 function ColorField({ label, value, onChange }) {
+  const fieldValue = /^#[0-9a-f]{6}$/i.test(String(value || "")) ? value : "#000000";
+
   return (
     <label className="field color-field">
       <span>{label}</span>
       <div className="color-row">
-        <input onChange={(event) => onChange(event.target.value)} type="color" value={value} />
+        <input onChange={(event) => onChange(event.target.value)} type="color" value={fieldValue} />
         <input
           autoComplete="off"
           onChange={(event) => onChange(event.target.value)}
           pattern="#[0-9a-fA-F]{6}"
           type="text"
-          value={value}
+          value={fieldValue}
         />
       </div>
     </label>
   );
+}
+
+function filterStaffByQuery(staffItems, query) {
+  const normalizedQuery = normalizeText(query);
+  if (!normalizedQuery) return [];
+
+  return staffItems.filter((item) => {
+    const searchableText = [item.name, item.searchKana, item.slackUserId].map(normalizeText).join(" ");
+    return searchableText.includes(normalizedQuery);
+  });
+}
+
+function trialRecipientChoices(staffItems, query, selectedIds = []) {
+  const selected = staffItems.filter((item) => selectedIds.includes(item.id));
+  const filtered = filterStaffByQuery(staffItems, query);
+  const items = query.trim() ? [...selected, ...filtered] : selected;
+  const seen = new Set();
+
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
+function normalizeThemeForm(settings) {
+  return {
+    ...emptySettingsForm(),
+    ...(settings || {}),
+  };
+}
+
+function normalizeText(value) {
+  return toKatakana(String(value || "").normalize("NFKC").trim().toLocaleLowerCase("ja-JP"));
+}
+
+function toKatakana(value) {
+  return value.replace(/[\u3041-\u3096]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 0x60));
 }
 
 async function fetchJson(url, options) {
