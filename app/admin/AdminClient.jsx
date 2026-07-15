@@ -416,6 +416,16 @@ export default function AdminClient() {
               value={deviceForm.supportPhoneNumber}
             />
           </label>
+          <label className="field">
+            <span>担当講師ボタンの表示名</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setDeviceForm({ ...deviceForm, staffButtonLabel: event.target.value })}
+              placeholder="例：マンツーマンレッスンはこちら"
+              type="text"
+              value={deviceForm.staffButtonLabel}
+            />
+          </label>
           <label className="toggle-row">
             <input
               checked={deviceForm.enabled}
@@ -431,6 +441,24 @@ export default function AdminClient() {
               type="checkbox"
             />
             <span>レッスン室レンタルボタンを表示する</span>
+          </label>
+          <label className="toggle-row">
+            <input
+              checked={deviceForm.showGroupLesson}
+              onChange={(event) => setDeviceForm({ ...deviceForm, showGroupLesson: event.target.checked })}
+              type="checkbox"
+            />
+            <span>グループレッスン受付ボタンを表示する</span>
+          </label>
+          <label className="field">
+            <span>グループレッスン受付ボタンの表示名</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setDeviceForm({ ...deviceForm, groupLessonButtonLabel: event.target.value })}
+              placeholder="例：グループレッスン受付はこちら"
+              type="text"
+              value={deviceForm.groupLessonButtonLabel}
+            />
           </label>
           <div className="section-subtitle">この端末の体験レッスン通知先</div>
           <div className="check-list">
@@ -479,7 +507,9 @@ export default function AdminClient() {
                     <p>{item.deviceKey}</p>
                     <p>{item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
                     <p>{item.supportPhoneNumber ? `問い合わせ電話 ${item.supportPhoneNumber}` : "問い合わせ電話 未設定"}</p>
+                    <p>担当講師ボタン {item.staffButtonLabel || "担当講師の名前を検索する"}</p>
                     <p>{item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
+                    <p>{item.showGroupLesson === true ? `グループ受付 表示（${item.groupLessonButtonLabel || "グループレッスン受付はこちら"}）` : "グループ受付 非表示"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
                       <a className="text-link compact" href={url} target="_blank" rel="noreferrer">
@@ -497,8 +527,11 @@ export default function AdminClient() {
                           ...item,
                           logoUrl: item.logoUrl || "",
                           supportPhoneNumber: item.supportPhoneNumber || "",
+                          staffButtonLabel: item.staffButtonLabel || "担当講師の名前を検索する",
                           trialLessonStaffIds: item.trialLessonStaffIds || [],
                           showRoomRental: item.showRoomRental !== false,
+                          showGroupLesson: item.showGroupLesson === true,
+                          groupLessonButtonLabel: item.groupLessonButtonLabel || "グループレッスン受付はこちら",
                         });
                         setDeviceMessage(`${item.schoolName} / ${item.deviceName} を編集中です。`);
                       }}
@@ -571,8 +604,11 @@ function emptyDeviceForm() {
     deviceKey: "",
     logoUrl: "",
     supportPhoneNumber: "",
+    staffButtonLabel: "担当講師の名前を検索する",
     trialLessonStaffIds: [],
     showRoomRental: true,
+    showGroupLesson: false,
+    groupLessonButtonLabel: "グループレッスン受付はこちら",
     enabled: true,
   };
 }

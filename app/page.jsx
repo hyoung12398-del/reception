@@ -168,6 +168,32 @@ export default function ReceptionPage() {
     showCompletionNotice();
   }
 
+  async function saveGroupLesson() {
+    setMessage("グループレッスン受付を記録しています...");
+    setSending(true);
+
+    const result = await requestJson(
+      "/api/group-lesson",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitorName, deviceKey }),
+      },
+      15000,
+      currentDevice?.supportPhoneNumber,
+    );
+
+    setSending(false);
+    if (!result.ok) {
+      setMessage(result.error || "記録に失敗しました。");
+      return;
+    }
+
+    resetForm();
+    setMessage("グループレッスン受付を記録しました。");
+    showCompletionNotice();
+  }
+
   function resetForm() {
     setVisitorName("");
     setSelectedStaffId("");
@@ -202,7 +228,13 @@ export default function ReceptionPage() {
   const sendDisabled = sending || !currentDevice || !visitorName.trim() || !selectedStaffId;
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
   const rentalDisabled = sending || !currentDevice || !visitorName.trim();
+  const groupLessonDisabled = sending || !currentDevice || !visitorName.trim();
   const showRoomRental = currentDevice?.showRoomRental !== false;
+  const staffButtonLabel = currentDevice?.staffButtonLabel || "担当講師の名前を検索する";
+  const showGroupLesson = currentDevice?.showGroupLesson === true;
+  const groupLessonButtonLabel = currentDevice?.groupLessonButtonLabel || "グループレッスン受付はこちら";
+  const choiceCount = 2 + (showRoomRental ? 1 : 0) + (showGroupLesson ? 1 : 0);
+  const choiceGridClass = `choice-grid ${choiceCount === 2 ? "two-choice" : ""} ${choiceCount >= 4 ? "four-choice" : ""}`;
   const logoUrl = currentDevice?.logoUrl || settings.logoUrl;
   const themeStyle = {
     "--bg": settings.backgroundColor,
@@ -245,13 +277,18 @@ export default function ReceptionPage() {
 
         <section className="panel">
           {!mode ? (
-            <div className={`choice-grid ${showRoomRental ? "" : "two-choice"}`}>
+            <div className={choiceGridClass}>
               <button className="choice-button" disabled={!currentDevice} onClick={() => chooseMode("staff")} type="button">
-                担当講師の名前を検索する
+                {staffButtonLabel}
               </button>
               <button className="choice-button accent-outline" disabled={!currentDevice} onClick={() => chooseMode("trial")} type="button">
                 体験レッスンはこちら
               </button>
+              {showGroupLesson ? (
+                <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("group")} type="button">
+                  {groupLessonButtonLabel}
+                </button>
+              ) : null}
               {showRoomRental ? (
                 <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("rental")} type="button">
                   レッスン室レンタルの生徒さんはこちら
@@ -266,7 +303,7 @@ export default function ReceptionPage() {
 
               {mode === "staff" && (
                 <div>
-                  <div className="section-title">担当講師の名前を検索する</div>
+                  <div className="section-title">{staffButtonLabel}</div>
                   <label className="search-field">
                     <span>先生の名前</span>
                     <input
@@ -323,6 +360,11 @@ export default function ReceptionPage() {
               {mode === "rental" && (
                 <button className="secondary-action" disabled={rentalDisabled} onClick={saveRoomRental} type="button">
                   レッスン室レンタルを記録
+                </button>
+              )}
+              {mode === "group" && (
+                <button className="secondary-action" disabled={groupLessonDisabled} onClick={saveGroupLesson} type="button">
+                  グループレッスン受付を記録
                 </button>
               )}
             </>

@@ -10,6 +10,7 @@ const formArea = document.querySelector("#formArea");
 const staffArea = document.querySelector("#staffArea");
 const chooseStaff = document.querySelector("#chooseStaff");
 const chooseTrial = document.querySelector("#chooseTrial");
+const chooseGroupLesson = document.querySelector("#chooseGroupLesson");
 const chooseRental = document.querySelector("#chooseRental");
 const backButton = document.querySelector("#backButton");
 const staffGrid = document.querySelector("#staffGrid");
@@ -18,6 +19,7 @@ const emptyStaff = document.querySelector("#emptyStaff");
 const visitorName = document.querySelector("#visitorName");
 const sendButton = document.querySelector("#sendButton");
 const trialButton = document.querySelector("#trialButton");
+const groupLessonButton = document.querySelector("#groupLessonButton");
 const rentalButton = document.querySelector("#rentalButton");
 const message = document.querySelector("#message");
 const deviceLabel = document.querySelector("#deviceLabel");
@@ -39,12 +41,14 @@ async function main() {
   renderStaff([]);
   chooseStaff.addEventListener("click", () => chooseMode("staff"));
   chooseTrial.addEventListener("click", () => chooseMode("trial"));
+  chooseGroupLesson.addEventListener("click", () => chooseMode("group"));
   chooseRental.addEventListener("click", () => chooseMode("rental"));
   backButton.addEventListener("click", backToMenu);
   staffSearch.addEventListener("input", filterStaff);
   visitorName.addEventListener("input", updateButton);
   sendButton.addEventListener("click", sendCheckIn);
   trialButton.addEventListener("click", sendTrialLesson);
+  groupLessonButton.addEventListener("click", saveGroupLesson);
   rentalButton.addEventListener("click", saveRoomRental);
   completionClose.addEventListener("click", hideCompletionNotice);
   updateModeView();
@@ -106,11 +110,17 @@ function updateModeView() {
   staffArea.classList.toggle("hidden", mode !== "staff");
   sendButton.classList.toggle("hidden", mode !== "staff");
   trialButton.classList.toggle("hidden", mode !== "trial");
+  groupLessonButton.classList.toggle("hidden", mode !== "group");
   rentalButton.classList.toggle("hidden", mode !== "rental");
+  chooseStaff.textContent = currentDevice?.staffButtonLabel || "担当講師の名前を検索する";
+  chooseGroupLesson.textContent = currentDevice?.groupLessonButtonLabel || "グループレッスン受付はこちら";
+  chooseGroupLesson.classList.toggle("hidden", currentDevice?.showGroupLesson !== true);
   chooseRental.classList.toggle("hidden", currentDevice?.showRoomRental === false);
-  choiceGrid.classList.toggle("two-choice", currentDevice?.showRoomRental === false);
+  const choiceCount = 2 + (currentDevice?.showRoomRental === false ? 0 : 1) + (currentDevice?.showGroupLesson === true ? 1 : 0);
+  choiceGrid.classList.toggle("two-choice", choiceCount === 2);
+  choiceGrid.classList.toggle("four-choice", choiceCount >= 4);
 
-  for (const button of [chooseStaff, chooseTrial, chooseRental]) {
+  for (const button of [chooseStaff, chooseTrial, chooseGroupLesson, chooseRental]) {
     button.disabled = !currentDevice;
   }
 
@@ -249,9 +259,41 @@ async function saveRoomRental() {
   showCompletionNotice();
 }
 
+async function saveGroupLesson() {
+  message.textContent = "グループレッスン受付を記録しています...";
+  sendButton.disabled = true;
+  trialButton.disabled = true;
+  groupLessonButton.disabled = true;
+  rentalButton.disabled = true;
+
+  const result = await requestJson(
+    "/api/group-lesson",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        visitorName: visitorName.value,
+        deviceKey,
+      }),
+    },
+    15000,
+    currentDevice?.supportPhoneNumber,
+  );
+
+  if (!result.ok) {
+    message.textContent = result.error || "記録に失敗しました。";
+    updateButton();
+    return;
+  }
+
+  returnToMenuWithMessage("グループレッスン受付を記録しました。");
+  showCompletionNotice();
+}
+
 function updateButton() {
   sendButton.disabled = mode !== "staff" || !currentDevice || !visitorName.value.trim() || !selectedStaffId;
   trialButton.disabled = mode !== "trial" || !currentDevice || !visitorName.value.trim();
+  groupLessonButton.disabled = mode !== "group" || !currentDevice || !visitorName.value.trim();
   rentalButton.disabled = mode !== "rental" || !currentDevice || !visitorName.value.trim();
 }
 

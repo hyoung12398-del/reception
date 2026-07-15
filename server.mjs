@@ -73,6 +73,10 @@ createServer(async (req, res) => {
       return handleRoomRental(req, res);
     }
 
+    if (req.method === "POST" && url.pathname === "/api/group-lesson") {
+      return handleGroupLesson(req, res);
+    }
+
     if (req.method === "GET") {
       const path = url.pathname === "/" ? "/index.html" : url.pathname;
       if (path === "/admin.html" && !isAdmin(req)) {
@@ -108,6 +112,10 @@ async function handleCheckIn(req, res) {
     return json(res, { error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
   }
 
+  if (device.showRoomRental === false) {
+    return json(res, { error: "この端末ではレッスン室レンタル受付は利用できません。" }, 400);
+  }
+
   const staff = (await getStaff()).find((item) => item.id === staffId && item.enabled);
   if (!staff) {
     return json(res, { error: "担当者が見つかりません。" }, 404);
@@ -139,6 +147,42 @@ async function handleCheckIn(req, res) {
     return json(res, { error: `Slack通知に失敗しました: ${slackResult.error}`, visit }, 502);
   }
 
+  json(res, { ok: true, visit });
+}
+
+async function handleGroupLesson(req, res) {
+  const body = await readBody(req);
+  const visitorName = String(body.visitorName || "").trim();
+  const deviceKey = String(body.deviceKey || "").trim();
+
+  if (!visitorName) {
+    return json(res, { error: "来訪者名を入力してください。" }, 400);
+  }
+
+  const device = await findDevice(deviceKey);
+  if (!device) {
+    return json(res, { error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
+  }
+
+  if (device.showGroupLesson !== true) {
+    return json(res, { error: "この端末ではグループレッスン受付は利用できません。" }, 400);
+  }
+
+  const visit = {
+    id: crypto.randomUUID(),
+    visitorName,
+    staffId: null,
+    staffName: "グループレッスン受付",
+    schoolName: device.schoolName,
+    deviceName: device.deviceName,
+    status: "logged",
+    type: "group_lesson",
+    createdAt: new Date().toISOString(),
+    slackOk: true,
+    slackError: null,
+  };
+
+  await addVisit(visit);
   json(res, { ok: true, visit });
 }
 
@@ -300,9 +344,13 @@ async function handleSaveDevice(req, res) {
   const deviceName = String(body.deviceName || "").trim();
   const logoUrl = String(body.logoUrl || "").trim();
   const supportPhoneNumber = String(body.supportPhoneNumber || "").trim();
+  const staffButtonLabel = String(body.staffButtonLabel || "").trim();
   const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
     ? body.trialLessonStaffIds.map(String).filter(Boolean)
     : [];
+  const showRoomRental = body.showRoomRental !== false;
+  const showGroupLesson = body.showGroupLesson === true;
+  const groupLessonButtonLabel = String(body.groupLessonButtonLabel || "").trim();
   const enabled = Boolean(body.enabled);
 
   if (!deviceKey || !schoolName || !deviceName) {
@@ -327,6 +375,10 @@ async function handleSaveDevice(req, res) {
     logoUrl,
     supportPhoneNumber,
     trialLessonStaffIds,
+    staffButtonLabel,
+    showRoomRental,
+    showGroupLesson,
+    groupLessonButtonLabel,
     enabled,
   };
 
@@ -575,6 +627,10 @@ function fromDeviceRow(row) {
     logoUrl: row.logo_url || "",
     supportPhoneNumber: row.support_phone_number || "",
     trialLessonStaffIds: row.trial_lesson_staff_ids || [],
+    staffButtonLabel: row.staff_button_label || "担当講師の名前を検索する",
+    showRoomRental: row.show_room_rental !== false,
+    showGroupLesson: row.show_group_lesson === true,
+    groupLessonButtonLabel: row.group_lesson_button_label || "グループレッスン受付はこちら",
     enabled: row.enabled,
   };
 }
@@ -588,6 +644,10 @@ function toDeviceRow(device) {
     logo_url: device.logoUrl || null,
     support_phone_number: device.supportPhoneNumber || null,
     trial_lesson_staff_ids: device.trialLessonStaffIds || [],
+    staff_button_label: device.staffButtonLabel || null,
+    show_room_rental: device.showRoomRental !== false,
+    show_group_lesson: device.showGroupLesson === true,
+    group_lesson_button_label: device.groupLessonButtonLabel || null,
     enabled: device.enabled,
   };
 }

@@ -20,8 +20,11 @@ const deviceName = document.querySelector("#deviceName");
 const deviceKey = document.querySelector("#deviceKey");
 const deviceLogoUrl = document.querySelector("#deviceLogoUrl");
 const deviceSupportPhoneNumber = document.querySelector("#deviceSupportPhoneNumber");
+const deviceStaffButtonLabel = document.querySelector("#deviceStaffButtonLabel");
 const deviceEnabled = document.querySelector("#deviceEnabled");
 const deviceShowRoomRental = document.querySelector("#deviceShowRoomRental");
+const deviceShowGroupLesson = document.querySelector("#deviceShowGroupLesson");
+const deviceGroupLessonButtonLabel = document.querySelector("#deviceGroupLessonButtonLabel");
 const deviceMessage = document.querySelector("#deviceMessage");
 const resetDeviceForm = document.querySelector("#resetDeviceForm");
 const logoutButton = document.querySelector("#logoutButton");
@@ -101,7 +104,9 @@ function renderDevice(item) {
         <p>${escapeHtml(item.deviceKey)}</p>
         <p>${item.logoUrl ? "端末別ロゴ 設定済み" : "端末別ロゴ 未設定"}</p>
         <p>${item.supportPhoneNumber ? `問い合わせ電話 ${escapeHtml(item.supportPhoneNumber)}` : "問い合わせ電話 未設定"}</p>
+        <p>担当講師ボタン ${escapeHtml(item.staffButtonLabel || "担当講師の名前を検索する")}</p>
         <p>${item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
+        <p>${item.showGroupLesson === true ? `グループ受付 表示（${escapeHtml(item.groupLessonButtonLabel || "グループレッスン受付はこちら")}）` : "グループ受付 非表示"}</p>
         <p><a class="text-link compact" href="${url}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a></p>
       </div>
       <div class="row-actions">
@@ -129,8 +134,11 @@ function editDevice(item) {
   deviceKey.value = item.deviceKey;
   deviceLogoUrl.value = item.logoUrl || "";
   deviceSupportPhoneNumber.value = item.supportPhoneNumber || "";
+  deviceStaffButtonLabel.value = item.staffButtonLabel || "担当講師の名前を検索する";
   deviceEnabled.checked = item.enabled;
   deviceShowRoomRental.checked = item.showRoomRental !== false;
+  deviceShowGroupLesson.checked = item.showGroupLesson === true;
+  deviceGroupLessonButtonLabel.value = item.groupLessonButtonLabel || "グループレッスン受付はこちら";
   deviceMessage.textContent = `${item.schoolName} / ${item.deviceName} を編集中です。`;
 }
 
@@ -173,7 +181,10 @@ async function saveDevice(event) {
       deviceKey: deviceKey.value,
       logoUrl: deviceLogoUrl.value,
       supportPhoneNumber: deviceSupportPhoneNumber.value,
+      staffButtonLabel: deviceStaffButtonLabel.value,
       showRoomRental: deviceShowRoomRental.checked,
+      showGroupLesson: deviceShowGroupLesson.checked,
+      groupLessonButtonLabel: deviceGroupLessonButtonLabel.value,
       enabled: deviceEnabled.checked,
     });
 
@@ -252,8 +263,11 @@ function clearDeviceForm() {
   deviceKey.value = "";
   deviceLogoUrl.value = "";
   deviceSupportPhoneNumber.value = "";
+  deviceStaffButtonLabel.value = "担当講師の名前を検索する";
   deviceEnabled.checked = true;
   deviceShowRoomRental.checked = true;
+  deviceShowGroupLesson.checked = false;
+  deviceGroupLessonButtonLabel.value = "グループレッスン受付はこちら";
   deviceMessage.textContent = "";
 }
 

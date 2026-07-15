@@ -7,6 +7,10 @@
     "logoUrl": "",
     "supportPhoneNumber": "",
     "trialLessonStaffIds": [],
+    "staffButtonLabel": "マンツーマンレッスンはこちら",
+    "showRoomRental": false,
+    "showGroupLesson": true,
+    "groupLessonButtonLabel": "グループレッスン受付はこちら",
     "enabled": true
   },
   {
@@ -17,6 +21,10 @@
     "logoUrl": "",
     "supportPhoneNumber": "",
     "trialLessonStaffIds": [],
+    "staffButtonLabel": "マンツーマンレッスンはこちら",
+    "showRoomRental": false,
+    "showGroupLesson": true,
+    "groupLessonButtonLabel": "グループレッスン受付はこちら",
     "enabled": true
   }
 ]

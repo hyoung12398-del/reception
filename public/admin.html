@@ -76,6 +76,10 @@
             <span>通信エラー時の問い合わせ電話番号</span>
             <input id="deviceSupportPhoneNumber" type="tel" autocomplete="off" placeholder="例：042-000-0000" />
           </label>
+          <label class="field">
+            <span>担当講師ボタンの表示名</span>
+            <input id="deviceStaffButtonLabel" type="text" autocomplete="off" placeholder="例：マンツーマンレッスンはこちら" />
+          </label>
           <label class="toggle-row">
             <input id="deviceEnabled" type="checkbox" checked />
             <span>この端末を有効にする</span>
@@ -83,6 +87,14 @@
           <label class="toggle-row">
             <input id="deviceShowRoomRental" type="checkbox" checked />
             <span>レッスン室レンタルボタンを表示する</span>
+          </label>
+          <label class="toggle-row">
+            <input id="deviceShowGroupLesson" type="checkbox" />
+            <span>グループレッスン受付ボタンを表示する</span>
+          </label>
+          <label class="field">
+            <span>グループレッスン受付ボタンの表示名</span>
+            <input id="deviceGroupLessonButtonLabel" type="text" autocomplete="off" placeholder="例：グループレッスン受付はこちら" />
           </label>
           <div class="form-actions">
             <button class="primary" type="submit">保存</button>

@@ -18,10 +18,13 @@ export async function POST(request) {
   const deviceName = String(body.deviceName || "").trim();
   const logoUrl = String(body.logoUrl || "").trim();
   const supportPhoneNumber = String(body.supportPhoneNumber || "").trim();
+  const staffButtonLabel = String(body.staffButtonLabel || "").trim();
   const trialLessonStaffIds = Array.isArray(body.trialLessonStaffIds)
     ? body.trialLessonStaffIds.map(String).filter(Boolean)
     : [];
   const showRoomRental = body.showRoomRental !== false;
+  const showGroupLesson = body.showGroupLesson === true;
+  const groupLessonButtonLabel = String(body.groupLessonButtonLabel || "").trim();
   const enabled = Boolean(body.enabled);
 
   if (!deviceKey || !schoolName || !deviceName) {
@@ -46,7 +49,10 @@ export async function POST(request) {
     logoUrl,
     supportPhoneNumber,
     trialLessonStaffIds,
+    staffButtonLabel,
     showRoomRental,
+    showGroupLesson,
+    groupLessonButtonLabel,
     enabled,
   };
 
