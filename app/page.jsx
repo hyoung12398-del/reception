@@ -353,7 +353,7 @@ export default function ReceptionPage() {
 
               {mode === "staff" && (
                 <button className="primary" disabled={sendDisabled} onClick={sendCheckIn} type="button">
-                  呼び出す
+                  入室
                 </button>
               )}
               {mode === "trial" && (
