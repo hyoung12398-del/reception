@@ -118,7 +118,7 @@ export default function AdminClient() {
   }
 
   return (
-    <main className="app-shell">
+    <main className="app-shell admin-page">
       <section className="topbar">
         <div>
           <p className="eyebrow">Admin</p>
@@ -134,8 +134,10 @@ export default function AdminClient() {
         </div>
       </section>
 
-      <section className="panel admin-section">
-        <div className="section-title">デザイン設定</div>
+      <section className="panel admin-section admin-foldable design-admin-section">
+        <details>
+          <summary className="panel-summary">デザイン設定</summary>
+          <div className="panel-fold-body">
         <form className="staff-form" onSubmit={saveSettings}>
           <SettingsGroup title="基本設定" defaultOpen>
             <label className="field">
@@ -282,9 +284,11 @@ export default function AdminClient() {
             {settingsMessage}
           </p>
         </form>
+          </div>
+        </details>
       </section>
 
-      <section className="panel admin-section">
+      <section className="panel admin-section staff-admin-section">
         <div className="section-title">担当者管理</div>
         <form className="staff-form" onSubmit={saveStaff}>
           <label className="field">
@@ -395,8 +399,10 @@ export default function AdminClient() {
         </div>
       </section>
 
-      <section className="panel admin-section">
-        <div className="section-title">端末管理</div>
+      <section className="panel admin-section admin-foldable device-admin-section">
+        <details>
+          <summary className="panel-summary">端末管理</summary>
+          <div className="panel-fold-body">
         <form className="staff-form" onSubmit={saveDevice}>
           <label className="field">
             <span>校舎名</span>
@@ -681,10 +687,14 @@ export default function AdminClient() {
             <p className="empty">端末はまだ登録されていません。</p>
           )}
         </div>
+          </div>
+        </details>
       </section>
 
-      <section className="panel">
-        <div className="section-title">直近の受付</div>
+      <section className="panel admin-section admin-foldable visits-admin-section">
+        <details>
+          <summary className="panel-summary">直近の受付</summary>
+          <div className="panel-fold-body">
         <div className="visits">
           {visits.length ? (
             visits.map((item) => {
@@ -706,6 +716,8 @@ export default function AdminClient() {
             <p className="empty">受付履歴はまだありません。</p>
           )}
         </div>
+          </div>
+        </details>
       </section>
     </main>
   );

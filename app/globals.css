@@ -52,6 +52,11 @@ body {
   padding: 36px 0;
 }
 
+.admin-page {
+  display: flex;
+  flex-direction: column;
+}
+
 .topbar {
   align-items: center;
   display: flex;
@@ -147,6 +152,48 @@ h1 {
   border: 1px solid var(--surface-border);
   border-radius: 8px;
   padding: 24px;
+}
+
+.staff-admin-section {
+  order: 1;
+}
+
+.design-admin-section {
+  order: 2;
+}
+
+.device-admin-section {
+  order: 3;
+}
+
+.visits-admin-section {
+  order: 4;
+}
+
+.admin-foldable {
+  padding: 0;
+}
+
+.admin-foldable details {
+  display: block;
+}
+
+.panel-summary {
+  color: var(--text);
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: 900;
+  list-style-position: inside;
+  padding: 22px 24px;
+}
+
+.panel-summary:hover {
+  background: #fbfbf8;
+}
+
+.panel-fold-body {
+  border-top: 1px solid var(--surface-border);
+  padding: 0 24px 24px;
 }
 
 .choice-grid {
