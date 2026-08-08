@@ -11,6 +11,7 @@ const staffArea = document.querySelector("#staffArea");
 const chooseStaff = document.querySelector("#chooseStaff");
 const chooseTrial = document.querySelector("#chooseTrial");
 const chooseGroupLesson = document.querySelector("#chooseGroupLesson");
+const chooseBambiLesson = document.querySelector("#chooseBambiLesson");
 const chooseRental = document.querySelector("#chooseRental");
 const backButton = document.querySelector("#backButton");
 const staffGrid = document.querySelector("#staffGrid");
@@ -20,6 +21,7 @@ const visitorName = document.querySelector("#visitorName");
 const sendButton = document.querySelector("#sendButton");
 const trialButton = document.querySelector("#trialButton");
 const groupLessonButton = document.querySelector("#groupLessonButton");
+const bambiLessonButton = document.querySelector("#bambiLessonButton");
 const rentalButton = document.querySelector("#rentalButton");
 const message = document.querySelector("#message");
 const deviceLabel = document.querySelector("#deviceLabel");
@@ -42,6 +44,7 @@ async function main() {
   chooseStaff.addEventListener("click", () => chooseMode("staff"));
   chooseTrial.addEventListener("click", () => chooseMode("trial"));
   chooseGroupLesson.addEventListener("click", () => chooseMode("group"));
+  chooseBambiLesson.addEventListener("click", () => chooseMode("bambi"));
   chooseRental.addEventListener("click", () => chooseMode("rental"));
   backButton.addEventListener("click", backToMenu);
   staffSearch.addEventListener("input", filterStaff);
@@ -49,6 +52,7 @@ async function main() {
   sendButton.addEventListener("click", sendCheckIn);
   trialButton.addEventListener("click", sendTrialLesson);
   groupLessonButton.addEventListener("click", saveGroupLesson);
+  bambiLessonButton.addEventListener("click", saveBambiLesson);
   rentalButton.addEventListener("click", saveRoomRental);
   completionClose.addEventListener("click", hideCompletionNotice);
   updateModeView();
@@ -111,16 +115,23 @@ function updateModeView() {
   sendButton.classList.toggle("hidden", mode !== "staff");
   trialButton.classList.toggle("hidden", mode !== "trial");
   groupLessonButton.classList.toggle("hidden", mode !== "group");
+  bambiLessonButton.classList.toggle("hidden", mode !== "bambi");
   rentalButton.classList.toggle("hidden", mode !== "rental");
   chooseStaff.textContent = currentDevice?.staffButtonLabel || "担当講師の名前を検索する";
   chooseGroupLesson.textContent = currentDevice?.groupLessonButtonLabel || "グループレッスン受付はこちら";
+  chooseBambiLesson.textContent = currentDevice?.bambiLessonButtonLabel || "Bambiレッスンはこちら";
   chooseGroupLesson.classList.toggle("hidden", currentDevice?.showGroupLesson !== true);
+  chooseBambiLesson.classList.toggle("hidden", currentDevice?.showBambiLesson !== true);
   chooseRental.classList.toggle("hidden", currentDevice?.showRoomRental === false);
-  const choiceCount = 2 + (currentDevice?.showRoomRental === false ? 0 : 1) + (currentDevice?.showGroupLesson === true ? 1 : 0);
+  const choiceCount =
+    2 +
+    (currentDevice?.showRoomRental === false ? 0 : 1) +
+    (currentDevice?.showGroupLesson === true ? 1 : 0) +
+    (currentDevice?.showBambiLesson === true ? 1 : 0);
   choiceGrid.classList.toggle("two-choice", choiceCount === 2);
   choiceGrid.classList.toggle("four-choice", choiceCount >= 4);
 
-  for (const button of [chooseStaff, chooseTrial, chooseGroupLesson, chooseRental]) {
+  for (const button of [chooseStaff, chooseTrial, chooseGroupLesson, chooseBambiLesson, chooseRental]) {
     button.disabled = !currentDevice;
   }
 
@@ -290,10 +301,43 @@ async function saveGroupLesson() {
   showCompletionNotice();
 }
 
+async function saveBambiLesson() {
+  message.textContent = "Bambiレッスン受付を記録しています...";
+  sendButton.disabled = true;
+  trialButton.disabled = true;
+  groupLessonButton.disabled = true;
+  bambiLessonButton.disabled = true;
+  rentalButton.disabled = true;
+
+  const result = await requestJson(
+    "/api/bambi-lesson",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        visitorName: visitorName.value,
+        deviceKey,
+      }),
+    },
+    15000,
+    currentDevice?.supportPhoneNumber,
+  );
+
+  if (!result.ok) {
+    message.textContent = result.error || "記録に失敗しました。";
+    updateButton();
+    return;
+  }
+
+  returnToMenuWithMessage("Bambiレッスン受付を記録しました。");
+  showCompletionNotice();
+}
+
 function updateButton() {
   sendButton.disabled = mode !== "staff" || !currentDevice || !visitorName.value.trim() || !selectedStaffId;
   trialButton.disabled = mode !== "trial" || !currentDevice || !visitorName.value.trim();
   groupLessonButton.disabled = mode !== "group" || !currentDevice || !visitorName.value.trim();
+  bambiLessonButton.disabled = mode !== "bambi" || !currentDevice || !visitorName.value.trim();
   rentalButton.disabled = mode !== "rental" || !currentDevice || !visitorName.value.trim();
 }
 

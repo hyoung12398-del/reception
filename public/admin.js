@@ -25,6 +25,8 @@ const deviceEnabled = document.querySelector("#deviceEnabled");
 const deviceShowRoomRental = document.querySelector("#deviceShowRoomRental");
 const deviceShowGroupLesson = document.querySelector("#deviceShowGroupLesson");
 const deviceGroupLessonButtonLabel = document.querySelector("#deviceGroupLessonButtonLabel");
+const deviceShowBambiLesson = document.querySelector("#deviceShowBambiLesson");
+const deviceBambiLessonButtonLabel = document.querySelector("#deviceBambiLessonButtonLabel");
 const deviceMessage = document.querySelector("#deviceMessage");
 const resetDeviceForm = document.querySelector("#resetDeviceForm");
 const logoutButton = document.querySelector("#logoutButton");
@@ -107,6 +109,7 @@ function renderDevice(item) {
         <p>担当講師ボタン ${escapeHtml(item.staffButtonLabel || "担当講師の名前を検索する")}</p>
         <p>${item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
         <p>${item.showGroupLesson === true ? `グループ受付 表示（${escapeHtml(item.groupLessonButtonLabel || "グループレッスン受付はこちら")}）` : "グループ受付 非表示"}</p>
+        <p>${item.showBambiLesson === true ? `Bambiレッスン 表示（${escapeHtml(item.bambiLessonButtonLabel || "Bambiレッスンはこちら")}）` : "Bambiレッスン 非表示"}</p>
         <p><a class="text-link compact" href="${url}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a></p>
       </div>
       <div class="row-actions">
@@ -139,6 +142,8 @@ function editDevice(item) {
   deviceShowRoomRental.checked = item.showRoomRental !== false;
   deviceShowGroupLesson.checked = item.showGroupLesson === true;
   deviceGroupLessonButtonLabel.value = item.groupLessonButtonLabel || "グループレッスン受付はこちら";
+  deviceShowBambiLesson.checked = item.showBambiLesson === true;
+  deviceBambiLessonButtonLabel.value = item.bambiLessonButtonLabel || "Bambiレッスンはこちら";
   deviceMessage.textContent = `${item.schoolName} / ${item.deviceName} を編集中です。`;
 }
 
@@ -185,6 +190,8 @@ async function saveDevice(event) {
       showRoomRental: deviceShowRoomRental.checked,
       showGroupLesson: deviceShowGroupLesson.checked,
       groupLessonButtonLabel: deviceGroupLessonButtonLabel.value,
+      showBambiLesson: deviceShowBambiLesson.checked,
+      bambiLessonButtonLabel: deviceBambiLessonButtonLabel.value,
       enabled: deviceEnabled.checked,
     });
 
@@ -268,6 +275,8 @@ function clearDeviceForm() {
   deviceShowRoomRental.checked = true;
   deviceShowGroupLesson.checked = false;
   deviceGroupLessonButtonLabel.value = "グループレッスン受付はこちら";
+  deviceShowBambiLesson.checked = false;
+  deviceBambiLessonButtonLabel.value = "Bambiレッスンはこちら";
   deviceMessage.textContent = "";
 }
 

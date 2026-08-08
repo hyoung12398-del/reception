@@ -498,6 +498,24 @@ export default function AdminClient() {
               value={deviceForm.groupLessonButtonLabel}
             />
           </label>
+          <label className="toggle-row">
+            <input
+              checked={deviceForm.showBambiLesson}
+              onChange={(event) => setDeviceForm({ ...deviceForm, showBambiLesson: event.target.checked })}
+              type="checkbox"
+            />
+            <span>Bambiレッスンボタンを表示する</span>
+          </label>
+          <label className="field">
+            <span>Bambiレッスンボタンの表示名</span>
+            <input
+              autoComplete="off"
+              onChange={(event) => setDeviceForm({ ...deviceForm, bambiLessonButtonLabel: event.target.value })}
+              placeholder="例：Bambiレッスンはこちら"
+              type="text"
+              value={deviceForm.bambiLessonButtonLabel}
+            />
+          </label>
           <SettingsGroup title="この端末だけのデザイン設定">
             <label className="toggle-row">
               <input
@@ -644,6 +662,7 @@ export default function AdminClient() {
                     <p>担当講師ボタン {item.staffButtonLabel || "担当講師の名前を検索する"}</p>
                     <p>{item.showRoomRental === false ? "レッスン室レンタル 非表示" : "レッスン室レンタル 表示"}</p>
                     <p>{item.showGroupLesson === true ? `グループ受付 表示（${item.groupLessonButtonLabel || "グループレッスン受付はこちら"}）` : "グループ受付 非表示"}</p>
+                    <p>{item.showBambiLesson === true ? `Bambiレッスン 表示（${item.bambiLessonButtonLabel || "Bambiレッスンはこちら"}）` : "Bambiレッスン 非表示"}</p>
                     <p>{item.deviceThemeEnabled === true ? "端末別デザイン 使用中" : "端末別デザイン 未使用"}</p>
                     <p>{recipientLabel(item.trialLessonStaffIds, staffItems)}</p>
                     <p>
@@ -667,6 +686,8 @@ export default function AdminClient() {
                           showRoomRental: item.showRoomRental !== false,
                           showGroupLesson: item.showGroupLesson === true,
                           groupLessonButtonLabel: item.groupLessonButtonLabel || "グループレッスン受付はこちら",
+                          showBambiLesson: item.showBambiLesson === true,
+                          bambiLessonButtonLabel: item.bambiLessonButtonLabel || "Bambiレッスンはこちら",
                           deviceThemeEnabled: item.deviceThemeEnabled === true,
                           themeOverrides: normalizeThemeForm(
                             item.themeOverrides && Object.keys(item.themeOverrides).length ? item.themeOverrides : settingsForm,
@@ -755,6 +776,8 @@ function emptyDeviceForm() {
     showRoomRental: true,
     showGroupLesson: false,
     groupLessonButtonLabel: "グループレッスン受付はこちら",
+    showBambiLesson: false,
+    bambiLessonButtonLabel: "Bambiレッスンはこちら",
     deviceThemeEnabled: false,
     themeOverrides: emptySettingsForm(),
     enabled: true,

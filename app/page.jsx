@@ -194,6 +194,32 @@ export default function ReceptionPage() {
     showCompletionNotice();
   }
 
+  async function saveBambiLesson() {
+    setMessage("Bambiレッスン受付を記録しています...");
+    setSending(true);
+
+    const result = await requestJson(
+      "/api/bambi-lesson",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitorName, deviceKey }),
+      },
+      15000,
+      currentDevice?.supportPhoneNumber,
+    );
+
+    setSending(false);
+    if (!result.ok) {
+      setMessage(result.error || "記録に失敗しました。");
+      return;
+    }
+
+    resetForm();
+    setMessage("Bambiレッスン受付を記録しました。");
+    showCompletionNotice();
+  }
+
   function resetForm() {
     setVisitorName("");
     setSelectedStaffId("");
@@ -229,11 +255,14 @@ export default function ReceptionPage() {
   const trialDisabled = sending || !currentDevice || !visitorName.trim();
   const rentalDisabled = sending || !currentDevice || !visitorName.trim();
   const groupLessonDisabled = sending || !currentDevice || !visitorName.trim();
+  const bambiLessonDisabled = sending || !currentDevice || !visitorName.trim();
   const showRoomRental = currentDevice?.showRoomRental !== false;
   const staffButtonLabel = currentDevice?.staffButtonLabel || "担当講師の名前を検索する";
   const showGroupLesson = currentDevice?.showGroupLesson === true;
   const groupLessonButtonLabel = currentDevice?.groupLessonButtonLabel || "グループレッスン受付はこちら";
-  const choiceCount = 2 + (showRoomRental ? 1 : 0) + (showGroupLesson ? 1 : 0);
+  const showBambiLesson = currentDevice?.showBambiLesson === true;
+  const bambiLessonButtonLabel = currentDevice?.bambiLessonButtonLabel || "Bambiレッスンはこちら";
+  const choiceCount = 2 + (showRoomRental ? 1 : 0) + (showGroupLesson ? 1 : 0) + (showBambiLesson ? 1 : 0);
   const choiceGridClass = `choice-grid ${choiceCount === 2 ? "two-choice" : ""} ${choiceCount >= 4 ? "four-choice" : ""}`;
   const activeSettings =
     currentDevice?.deviceThemeEnabled && currentDevice?.themeOverrides
@@ -291,6 +320,11 @@ export default function ReceptionPage() {
               {showGroupLesson ? (
                 <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("group")} type="button">
                   {groupLessonButtonLabel}
+                </button>
+              ) : null}
+              {showBambiLesson ? (
+                <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("bambi")} type="button">
+                  {bambiLessonButtonLabel}
                 </button>
               ) : null}
               {showRoomRental ? (
@@ -369,6 +403,11 @@ export default function ReceptionPage() {
               {mode === "group" && (
                 <button className="secondary-action" disabled={groupLessonDisabled} onClick={saveGroupLesson} type="button">
                   グループレッスン受付を記録
+                </button>
+              )}
+              {mode === "bambi" && (
+                <button className="secondary-action" disabled={bambiLessonDisabled} onClick={saveBambiLesson} type="button">
+                  Bambiレッスン受付を記録
                 </button>
               )}
             </>

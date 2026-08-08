@@ -77,6 +77,10 @@ createServer(async (req, res) => {
       return handleGroupLesson(req, res);
     }
 
+    if (req.method === "POST" && url.pathname === "/api/bambi-lesson") {
+      return handleBambiLesson(req, res);
+    }
+
     if (req.method === "GET") {
       const path = url.pathname === "/" ? "/index.html" : url.pathname;
       if (path === "/admin.html" && !isAdmin(req)) {
@@ -177,6 +181,42 @@ async function handleGroupLesson(req, res) {
     deviceName: device.deviceName,
     status: "logged",
     type: "group_lesson",
+    createdAt: new Date().toISOString(),
+    slackOk: true,
+    slackError: null,
+  };
+
+  await addVisit(visit);
+  json(res, { ok: true, visit });
+}
+
+async function handleBambiLesson(req, res) {
+  const body = await readBody(req);
+  const visitorName = String(body.visitorName || "").trim();
+  const deviceKey = String(body.deviceKey || "").trim();
+
+  if (!visitorName) {
+    return json(res, { error: "来訪者名を入力してください。" }, 400);
+  }
+
+  const device = await findDevice(deviceKey);
+  if (!device) {
+    return json(res, { error: "受付端末が登録されていません。管理画面で端末を登録してください。" }, 400);
+  }
+
+  if (device.showBambiLesson !== true) {
+    return json(res, { error: "この端末ではBambiレッスン受付は利用できません。" }, 400);
+  }
+
+  const visit = {
+    id: crypto.randomUUID(),
+    visitorName,
+    staffId: null,
+    staffName: "Bambiレッスン",
+    schoolName: device.schoolName,
+    deviceName: device.deviceName,
+    status: "logged",
+    type: "bambi_lesson",
     createdAt: new Date().toISOString(),
     slackOk: true,
     slackError: null,
@@ -351,6 +391,8 @@ async function handleSaveDevice(req, res) {
   const showRoomRental = body.showRoomRental !== false;
   const showGroupLesson = body.showGroupLesson === true;
   const groupLessonButtonLabel = String(body.groupLessonButtonLabel || "").trim();
+  const showBambiLesson = body.showBambiLesson === true;
+  const bambiLessonButtonLabel = String(body.bambiLessonButtonLabel || "").trim();
   const deviceThemeEnabled = body.deviceThemeEnabled === true;
   const themeOverrides = body.themeOverrides && typeof body.themeOverrides === "object" ? body.themeOverrides : {};
   const enabled = Boolean(body.enabled);
@@ -381,6 +423,8 @@ async function handleSaveDevice(req, res) {
     showRoomRental,
     showGroupLesson,
     groupLessonButtonLabel,
+    showBambiLesson,
+    bambiLessonButtonLabel,
     deviceThemeEnabled,
     themeOverrides,
     enabled,
@@ -635,6 +679,8 @@ function fromDeviceRow(row) {
     showRoomRental: row.show_room_rental !== false,
     showGroupLesson: row.show_group_lesson === true,
     groupLessonButtonLabel: row.group_lesson_button_label || "グループレッスン受付はこちら",
+    showBambiLesson: row.show_bambi_lesson === true,
+    bambiLessonButtonLabel: row.bambi_lesson_button_label || "Bambiレッスンはこちら",
     deviceThemeEnabled: row.device_theme_enabled === true,
     themeOverrides: row.theme_overrides || {},
     enabled: row.enabled,
@@ -654,6 +700,8 @@ function toDeviceRow(device) {
     show_room_rental: device.showRoomRental !== false,
     show_group_lesson: device.showGroupLesson === true,
     group_lesson_button_label: device.groupLessonButtonLabel || null,
+    show_bambi_lesson: device.showBambiLesson === true,
+    bambi_lesson_button_label: device.bambiLessonButtonLabel || null,
     device_theme_enabled: device.deviceThemeEnabled === true,
     theme_overrides: device.themeOverrides || {},
     enabled: device.enabled,

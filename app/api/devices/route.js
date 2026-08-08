@@ -25,6 +25,8 @@ export async function POST(request) {
   const showRoomRental = body.showRoomRental !== false;
   const showGroupLesson = body.showGroupLesson === true;
   const groupLessonButtonLabel = String(body.groupLessonButtonLabel || "").trim();
+  const showBambiLesson = body.showBambiLesson === true;
+  const bambiLessonButtonLabel = String(body.bambiLessonButtonLabel || "").trim();
   const deviceThemeEnabled = body.deviceThemeEnabled === true;
   const themeOverrides = body.themeOverrides && typeof body.themeOverrides === "object" ? body.themeOverrides : {};
   const enabled = Boolean(body.enabled);
@@ -55,6 +57,8 @@ export async function POST(request) {
     showRoomRental,
     showGroupLesson,
     groupLessonButtonLabel,
+    showBambiLesson,
+    bambiLessonButtonLabel,
     deviceThemeEnabled,
     themeOverrides,
     enabled,
