@@ -224,6 +224,39 @@ export default function AdminClient() {
             </div>
           </SettingsGroup>
 
+          <SettingsGroup title="文字サイズ">
+            <div className="color-grid">
+              <FontSizeField
+                label="基本文字サイズ"
+                max={24}
+                min={14}
+                onChange={(value) => setSettingsForm({ ...settingsForm, baseFontSize: value })}
+                value={settingsForm.baseFontSize}
+              />
+              <FontSizeField
+                label="タイトル文字サイズ"
+                max={52}
+                min={24}
+                onChange={(value) => setSettingsForm({ ...settingsForm, titleFontSize: value })}
+                value={settingsForm.titleFontSize}
+              />
+              <FontSizeField
+                label="入口ボタン文字サイズ"
+                max={34}
+                min={16}
+                onChange={(value) => setSettingsForm({ ...settingsForm, choiceButtonFontSize: value })}
+                value={settingsForm.choiceButtonFontSize}
+              />
+              <FontSizeField
+                label="入力欄文字サイズ"
+                max={34}
+                min={16}
+                onChange={(value) => setSettingsForm({ ...settingsForm, inputFontSize: value })}
+                value={settingsForm.inputFontSize}
+              />
+            </div>
+          </SettingsGroup>
+
           <SettingsGroup title="入口ボタンの色">
             <ButtonColorGroup
               title="担当講師の名前を検索する"
@@ -553,6 +586,14 @@ export default function AdminClient() {
                     value={deviceForm.themeOverrides.brandName || ""}
                   />
                 </label>
+                <div className="section-subtitle">文字サイズ</div>
+                <div className="color-grid">
+                  <FontSizeField label="基本文字サイズ" max={24} min={14} value={deviceForm.themeOverrides.baseFontSize} onChange={(value) => updateDeviceTheme("baseFontSize", value)} />
+                  <FontSizeField label="タイトル文字サイズ" max={52} min={24} value={deviceForm.themeOverrides.titleFontSize} onChange={(value) => updateDeviceTheme("titleFontSize", value)} />
+                  <FontSizeField label="入口ボタン文字サイズ" max={34} min={16} value={deviceForm.themeOverrides.choiceButtonFontSize} onChange={(value) => updateDeviceTheme("choiceButtonFontSize", value)} />
+                  <FontSizeField label="入力欄文字サイズ" max={34} min={16} value={deviceForm.themeOverrides.inputFontSize} onChange={(value) => updateDeviceTheme("inputFontSize", value)} />
+                </div>
+                <div className="section-subtitle">色</div>
                 <div className="color-grid">
                   <ColorField label="背景色" value={deviceForm.themeOverrides.backgroundColor} onChange={(value) => updateDeviceTheme("backgroundColor", value)} />
                   <ColorField label="カード色" value={deviceForm.themeOverrides.surfaceColor} onChange={(value) => updateDeviceTheme("surfaceColor", value)} />
@@ -821,6 +862,10 @@ function emptySettingsForm() {
     rentalButtonBorderColor: "#d9ded9",
     staffCardTextColor: "#1f2428",
     messageColor: "#0f4842",
+    baseFontSize: 18,
+    titleFontSize: 34,
+    choiceButtonFontSize: 21,
+    inputFontSize: 22,
   };
 }
 
@@ -881,6 +926,10 @@ function DesignPreview({ settings }) {
     "--preview-rental-button-border": settings.rentalButtonBorderColor,
     "--preview-staff-card-text": settings.staffCardTextColor,
     "--preview-message": settings.messageColor,
+    "--preview-base-font-size": `${settings.baseFontSize || 18}px`,
+    "--preview-title-font-size": `${settings.titleFontSize || 34}px`,
+    "--preview-choice-button-font-size": `${settings.choiceButtonFontSize || 21}px`,
+    "--preview-input-font-size": `${settings.inputFontSize || 22}px`,
   };
 
   return (
@@ -933,6 +982,33 @@ function ColorField({ label, value, onChange }) {
   );
 }
 
+function FontSizeField({ label, max, min, onChange, value }) {
+  const numericValue = normalizeFontSize(value, min, max);
+
+  return (
+    <label className="field font-size-field">
+      <span>{label}</span>
+      <div className="font-size-row">
+        <input
+          max={max}
+          min={min}
+          onChange={(event) => onChange(Number(event.target.value))}
+          type="range"
+          value={numericValue}
+        />
+        <input
+          max={max}
+          min={min}
+          onChange={(event) => onChange(Number(event.target.value))}
+          type="number"
+          value={numericValue}
+        />
+        <span>{numericValue}px</span>
+      </div>
+    </label>
+  );
+}
+
 function filterStaffByQuery(staffItems, query) {
   const normalizedQuery = normalizeText(query);
   if (!normalizedQuery) return [];
@@ -969,6 +1045,12 @@ function normalizeText(value) {
 
 function toKatakana(value) {
   return value.replace(/[\u3041-\u3096]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 0x60));
+}
+
+function normalizeFontSize(value, min, max) {
+  const size = Number(value);
+  if (!Number.isFinite(size)) return min;
+  return Math.min(max, Math.max(min, Math.round(size)));
 }
 
 async function fetchJson(url, options) {

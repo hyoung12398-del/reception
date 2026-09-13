@@ -7,6 +7,10 @@
   --line: #d9ded9;
   --accent: #16635b;
   --accent-strong: #0f4842;
+  --base-font-size: 18px;
+  --title-font-size: 34px;
+  --choice-button-font-size: 21px;
+  --input-font-size: 22px;
   --danger: #b42318;
 }
 
@@ -19,6 +23,7 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+  font-size: var(--base-font-size);
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
@@ -49,7 +54,7 @@ body {
 }
 
 h1 {
-  font-size: 34px;
+  font-size: var(--title-font-size);
   line-height: 1.2;
   margin: 0;
 }
@@ -134,7 +139,7 @@ h1 {
   color: #fff;
   display: flex;
   font: inherit;
-  font-size: 21px;
+  font-size: var(--choice-button-font-size);
   font-weight: 900;
   justify-content: center;
   line-height: 1.35;
@@ -202,7 +207,7 @@ input {
   border: 1px solid var(--line);
   border-radius: 8px;
   font: inherit;
-  font-size: 22px;
+  font-size: var(--input-font-size);
   height: 56px;
   padding: 0 16px;
   width: 100%;

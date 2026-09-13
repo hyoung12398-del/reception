@@ -45,6 +45,10 @@ function formatSettingsSaveError(error) {
     "rental_button_border_color",
     "staff_card_text_color",
     "message_color",
+    "base_font_size",
+    "title_font_size",
+    "choice_button_font_size",
+    "input_font_size",
   ].filter((column) => message.includes(column));
 
   if (missingColumns.length) return `app_settings テーブルに ${missingColumns.join(", ")} 列がありません。`;

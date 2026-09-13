@@ -294,6 +294,10 @@ export default function ReceptionPage() {
     "--rental-button-border": activeSettings.rentalButtonBorderColor,
     "--staff-card-text": activeSettings.staffCardTextColor,
     "--message": activeSettings.messageColor,
+    "--base-font-size": `${activeSettings.baseFontSize}px`,
+    "--title-font-size": `${activeSettings.titleFontSize}px`,
+    "--choice-button-font-size": `${activeSettings.choiceButtonFontSize}px`,
+    "--input-font-size": `${activeSettings.inputFontSize}px`,
   };
 
   return (
@@ -519,4 +523,8 @@ const defaultSettings = {
   rentalButtonBorderColor: "#d9ded9",
   staffCardTextColor: "#1f2428",
   messageColor: "#0f4842",
+  baseFontSize: 18,
+  titleFontSize: 34,
+  choiceButtonFontSize: 21,
+  inputFontSize: 22,
 };

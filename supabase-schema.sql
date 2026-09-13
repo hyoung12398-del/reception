@@ -90,6 +90,10 @@ create table if not exists public.app_settings (
   rental_button_border_color text not null default '#d9ded9',
   staff_card_text_color text not null default '#1f2428',
   message_color text not null default '#0f4842',
+  base_font_size integer not null default 18,
+  title_font_size integer not null default 34,
+  choice_button_font_size integer not null default 21,
+  input_font_size integer not null default 22,
   updated_at timestamptz not null default now()
 );
 
@@ -112,6 +116,10 @@ alter table public.app_settings add column if not exists rental_button_text_colo
 alter table public.app_settings add column if not exists rental_button_border_color text not null default '#d9ded9';
 alter table public.app_settings add column if not exists staff_card_text_color text not null default '#1f2428';
 alter table public.app_settings add column if not exists message_color text not null default '#0f4842';
+alter table public.app_settings add column if not exists base_font_size integer not null default 18;
+alter table public.app_settings add column if not exists title_font_size integer not null default 34;
+alter table public.app_settings add column if not exists choice_button_font_size integer not null default 21;
+alter table public.app_settings add column if not exists input_font_size integer not null default 22;
 
 insert into public.app_settings (
   id,
@@ -139,7 +147,11 @@ insert into public.app_settings (
   rental_button_text_color,
   rental_button_border_color,
   staff_card_text_color,
-  message_color
+  message_color,
+  base_font_size,
+  title_font_size,
+  choice_button_font_size,
+  input_font_size
 ) values (
   'default',
   '受付',
@@ -166,7 +178,11 @@ insert into public.app_settings (
   '#1f2428',
   '#d9ded9',
   '#1f2428',
-  '#0f4842'
+  '#0f4842',
+  18,
+  34,
+  21,
+  22
 ) on conflict (id) do nothing;
 
 alter table public.staff enable row level security;
