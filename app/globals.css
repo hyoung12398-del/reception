@@ -246,6 +246,30 @@ h1 {
   color: var(--rental-button-text);
 }
 
+.choice-button.group {
+  background: var(--group-button-bg);
+  color: var(--group-button-text);
+  border-color: var(--group-button-border);
+}
+
+.preview-choice.group {
+  background: var(--preview-group-button-bg);
+  color: var(--preview-group-button-text);
+  border: 2px solid var(--preview-group-button-border);
+}
+
+.choice-button.bambi {
+  background: var(--bambi-button-bg);
+  color: var(--bambi-button-text);
+  border-color: var(--bambi-button-border);
+}
+
+.preview-choice.bambi {
+  background: var(--preview-bambi-button-bg);
+  color: var(--preview-bambi-button-text);
+  border: 2px solid var(--preview-bambi-button-border);
+}
+
 .choice-button:disabled {
   background: #a9b8b4;
   border-color: #a9b8b4;

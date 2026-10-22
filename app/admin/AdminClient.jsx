@@ -287,6 +287,12 @@ export default function AdminClient() {
             />
           </SettingsGroup>
 
+          <SettingsGroup title="Bambiレッスンはこちらの色">
+            <ButtonColorGroup title="Bambiレッスンはこちら" backgroundValue={settingsForm.bambiButtonBackgroundColor || settingsForm.rentalButtonBackgroundColor} textValue={settingsForm.bambiButtonTextColor || settingsForm.rentalButtonTextColor} borderValue={settingsForm.bambiButtonBorderColor || settingsForm.rentalButtonBorderColor} onBackgroundChange={(value) => setSettingsForm({ ...settingsForm, bambiButtonBackgroundColor: value })} onTextChange={(value) => setSettingsForm({ ...settingsForm, bambiButtonTextColor: value })} onBorderChange={(value) => setSettingsForm({ ...settingsForm, bambiButtonBorderColor: value })} />
+          </SettingsGroup>
+          <SettingsGroup title="グループレッスン受付はこちらの色">
+            <ButtonColorGroup title="グループレッスン受付はこちら" backgroundValue={settingsForm.groupButtonBackgroundColor || settingsForm.rentalButtonBackgroundColor} textValue={settingsForm.groupButtonTextColor || settingsForm.rentalButtonTextColor} borderValue={settingsForm.groupButtonBorderColor || settingsForm.rentalButtonBorderColor} onBackgroundChange={(value) => setSettingsForm({ ...settingsForm, groupButtonBackgroundColor: value })} onTextChange={(value) => setSettingsForm({ ...settingsForm, groupButtonTextColor: value })} onBorderChange={(value) => setSettingsForm({ ...settingsForm, groupButtonBorderColor: value })} />
+          </SettingsGroup>
           <SettingsGroup title="その他のボタン色">
             <div className="color-grid">
               <ColorField
@@ -625,7 +631,7 @@ export default function AdminClient() {
                   onBorderChange={(value) => updateDeviceTheme("trialButtonBorderColor", value)}
                 />
                 <ButtonColorGroup
-                  title="レンタル/グループ受付ボタン"
+                  title="レッスン室レンタルボタン"
                   backgroundValue={deviceForm.themeOverrides.rentalButtonBackgroundColor}
                   textValue={deviceForm.themeOverrides.rentalButtonTextColor}
                   borderValue={deviceForm.themeOverrides.rentalButtonBorderColor}
@@ -633,6 +639,8 @@ export default function AdminClient() {
                   onTextChange={(value) => updateDeviceTheme("rentalButtonTextColor", value)}
                   onBorderChange={(value) => updateDeviceTheme("rentalButtonBorderColor", value)}
                 />
+                <ButtonColorGroup title="Bambiレッスンはこちら" backgroundValue={deviceForm.themeOverrides.bambiButtonBackgroundColor || deviceForm.themeOverrides.rentalButtonBackgroundColor} textValue={deviceForm.themeOverrides.bambiButtonTextColor || deviceForm.themeOverrides.rentalButtonTextColor} borderValue={deviceForm.themeOverrides.bambiButtonBorderColor || deviceForm.themeOverrides.rentalButtonBorderColor} onBackgroundChange={(value) => updateDeviceTheme("bambiButtonBackgroundColor", value)} onTextChange={(value) => updateDeviceTheme("bambiButtonTextColor", value)} onBorderChange={(value) => updateDeviceTheme("bambiButtonBorderColor", value)} />
+                <ButtonColorGroup title="グループレッスン受付はこちら" backgroundValue={deviceForm.themeOverrides.groupButtonBackgroundColor || deviceForm.themeOverrides.rentalButtonBackgroundColor} textValue={deviceForm.themeOverrides.groupButtonTextColor || deviceForm.themeOverrides.rentalButtonTextColor} borderValue={deviceForm.themeOverrides.groupButtonBorderColor || deviceForm.themeOverrides.rentalButtonBorderColor} onBackgroundChange={(value) => updateDeviceTheme("groupButtonBackgroundColor", value)} onTextChange={(value) => updateDeviceTheme("groupButtonTextColor", value)} onBorderChange={(value) => updateDeviceTheme("groupButtonBorderColor", value)} />
                 <DesignPreview settings={{ ...settingsForm, ...deviceForm.themeOverrides }} />
               </>
             ) : (
@@ -860,6 +868,9 @@ function emptySettingsForm() {
     rentalButtonBackgroundColor: "#eef0ee",
     rentalButtonTextColor: "#1f2428",
     rentalButtonBorderColor: "#d9ded9",
+    bambiButtonBackgroundColor: "#eef0ee",
+    bambiButtonTextColor: "#1f2428",
+    bambiButtonBorderColor: "#d9ded9",
     staffCardTextColor: "#1f2428",
     messageColor: "#0f4842",
     baseFontSize: 18,
@@ -926,6 +937,12 @@ function DesignPreview({ settings }) {
     "--preview-rental-button-border": settings.rentalButtonBorderColor,
     "--preview-staff-card-text": settings.staffCardTextColor,
     "--preview-message": settings.messageColor,
+    "--preview-group-button-bg": settings.groupButtonBackgroundColor || settings.rentalButtonBackgroundColor,
+    "--preview-group-button-text": settings.groupButtonTextColor || settings.rentalButtonTextColor,
+    "--preview-group-button-border": settings.groupButtonBorderColor || settings.rentalButtonBorderColor,
+    "--preview-bambi-button-bg": settings.bambiButtonBackgroundColor || settings.rentalButtonBackgroundColor,
+    "--preview-bambi-button-text": settings.bambiButtonTextColor || settings.rentalButtonTextColor,
+    "--preview-bambi-button-border": settings.bambiButtonBorderColor || settings.rentalButtonBorderColor,
     "--preview-base-font-size": `${settings.baseFontSize || 18}px`,
     "--preview-title-font-size": `${settings.titleFontSize || 34}px`,
     "--preview-choice-button-font-size": `${settings.choiceButtonFontSize || 21}px`,
@@ -951,6 +968,8 @@ function DesignPreview({ settings }) {
             </button>
           </div>
           <label className="preview-field">
+            <button className="preview-choice group" type="button">グループレッスン受付はこちら</button>
+            <button className="preview-choice bambi" type="button">Bambiレッスンはこちら</button>
             <span>来訪者の名前</span>
             <div>例：山田 太郎</div>
           </label>

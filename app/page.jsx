@@ -292,6 +292,12 @@ export default function ReceptionPage() {
     "--rental-button-bg": activeSettings.rentalButtonBackgroundColor,
     "--rental-button-text": activeSettings.rentalButtonTextColor,
     "--rental-button-border": activeSettings.rentalButtonBorderColor,
+    "--group-button-bg": activeSettings.groupButtonBackgroundColor || activeSettings.rentalButtonBackgroundColor,
+    "--group-button-text": activeSettings.groupButtonTextColor || activeSettings.rentalButtonTextColor,
+    "--group-button-border": activeSettings.groupButtonBorderColor || activeSettings.rentalButtonBorderColor,
+    "--bambi-button-bg": activeSettings.bambiButtonBackgroundColor,
+    "--bambi-button-text": activeSettings.bambiButtonTextColor,
+    "--bambi-button-border": activeSettings.bambiButtonBorderColor,
     "--staff-card-text": activeSettings.staffCardTextColor,
     "--message": activeSettings.messageColor,
     "--base-font-size": `${activeSettings.baseFontSize}px`,
@@ -322,12 +328,12 @@ export default function ReceptionPage() {
                 体験レッスンはこちら
               </button>
               {showGroupLesson ? (
-                <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("group")} type="button">
+                <button className="choice-button group" disabled={!currentDevice} onClick={() => chooseMode("group")} type="button">
                   {groupLessonButtonLabel}
                 </button>
               ) : null}
               {showBambiLesson ? (
-                <button className="choice-button quiet" disabled={!currentDevice} onClick={() => chooseMode("bambi")} type="button">
+                <button className="choice-button bambi" disabled={!currentDevice} onClick={() => chooseMode("bambi")} type="button">
                   {bambiLessonButtonLabel}
                 </button>
               ) : null}
@@ -521,6 +527,9 @@ const defaultSettings = {
   rentalButtonBackgroundColor: "#eef0ee",
   rentalButtonTextColor: "#1f2428",
   rentalButtonBorderColor: "#d9ded9",
+  bambiButtonBackgroundColor: "#eef0ee",
+  bambiButtonTextColor: "#1f2428",
+  bambiButtonBorderColor: "#d9ded9",
   staffCardTextColor: "#1f2428",
   messageColor: "#0f4842",
   baseFontSize: 18,
