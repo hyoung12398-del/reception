@@ -974,7 +974,7 @@ function DesignPreview({ settings }) {
             <div>例：山田 太郎</div>
           </label>
           <div className="preview-staff-card">A先生</div>
-          <p className="preview-message">担当者へSlack通知を送信しました。</p>
+          <p className="preview-message">担当者に通知を送信しました。</p>
         </div>
       </div>
     </div>

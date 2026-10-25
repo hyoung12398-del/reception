@@ -207,7 +207,7 @@ async function sendCheckIn() {
     return;
   }
 
-  returnToMenuWithMessage("担当者へSlack通知を送信しました。");
+  returnToMenuWithMessage("担当者に通知を送信しました。");
   showCompletionNotice();
 }
 
@@ -236,7 +236,7 @@ async function sendTrialLesson() {
     return;
   }
 
-  returnToMenuWithMessage("体験レッスン受付をSlack通知しました。");
+  returnToMenuWithMessage("担当者に通知を送信しました。");
   showCompletionNotice();
 }
 

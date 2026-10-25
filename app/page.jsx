@@ -112,7 +112,7 @@ export default function ReceptionPage() {
     }
 
     resetForm();
-    setMessage("担当者へSlack通知を送信しました。");
+    setMessage("担当者に通知を送信しました。");
     showCompletionNotice();
   }
 
@@ -138,7 +138,7 @@ export default function ReceptionPage() {
     }
 
     resetForm();
-    setMessage("体験レッスン受付をSlack通知しました。");
+    setMessage("担当者に通知を送信しました。");
     showCompletionNotice();
   }
 
